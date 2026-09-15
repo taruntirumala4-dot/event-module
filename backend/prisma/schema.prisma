@@ -1,0 +1,90 @@
+// Prisma schema for Event Module
+// Database: SQLite
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("STUDENT")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events        Event[]        @relation("OrganizerEvents")
+  registrations Registration[]
+  bookmarks     Bookmark[]
+
+  @@map("users")
+}
+
+model Event {
+  id                   String   @id @default(uuid())
+  title                String
+  description          String
+  category             String
+  image                String?
+  venue                String?
+  location             String
+  mode                 String
+  startDate            DateTime
+  endDate              DateTime
+  startTime            String
+  endTime              String
+  registrationDeadline DateTime
+  capacity             Int
+  eligibility          String?
+  registrationLink     String?
+  organizerId          String
+  status               String   @default("PENDING")
+  rejectionReason      String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  organizer     User           @relation("OrganizerEvents", fields: [organizerId], references: [id], onDelete: Cascade)
+  registrations Registration[]
+  bookmarks     Bookmark[]
+
+  @@index([status])
+  @@index([category])
+  @@index([mode])
+  @@index([organizerId])
+  @@map("events")
+}
+
+model Registration {
+  id           String   @id @default(uuid())
+  studentId    String
+  eventId      String
+  registeredAt DateTime @default(now())
+
+  student User  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, eventId])
+  @@index([eventId])
+  @@map("registrations")
+}
+
+model Bookmark {
+  id        String   @id @default(uuid())
+  studentId String
+  eventId   String
+  createdAt DateTime @default(now())
+
+  student User  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, eventId])
+  @@index([eventId])
+  @@map("bookmarks")
+}

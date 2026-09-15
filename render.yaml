@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: event-module-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run prisma:generate && npm run build && npx prisma db push && npm run prisma:seed
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: DATABASE_URL
+        value: file:./prisma/prod.db
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: https://your-netlify-app.netlify.app
