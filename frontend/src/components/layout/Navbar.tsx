@@ -514,15 +514,15 @@ const Navbar: React.FC = () => {
             {/* Mobile Hamburger toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden"
+              className="show-mobile"
               style={{
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
-                display: 'none',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: '#0B1E4A',
+                padding: '0.4rem',
               }}
               aria-label="Toggle mobile menu"
             >

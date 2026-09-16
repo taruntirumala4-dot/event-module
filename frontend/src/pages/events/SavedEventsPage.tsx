@@ -64,7 +64,7 @@ const SavedEventsPage: React.FC = () => {
           </Link>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.25rem' }}>
+        <div className="responsive-cards-grid">
           {bookmarks.map((bm) => (
             <div key={bm.id} className="fade-in">
               <EventCard

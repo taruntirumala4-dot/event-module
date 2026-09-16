@@ -134,8 +134,8 @@ const EventDetails: React.FC<Props> = ({ event, onUpdate }) => {
           background: 'linear-gradient(135deg, #091838 0%, #0B1E4A 60%, #1C3FA8 100%)',
           position: 'relative',
           overflow: 'hidden',
-          padding: '2.5rem 3rem',
-          minHeight: 260,
+          padding: 'clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 3vw, 3rem)',
+          minHeight: 220,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
@@ -319,14 +319,7 @@ const EventDetails: React.FC<Props> = ({ event, onUpdate }) => {
       </div>
 
       {/* ══════════════ 3. TABS NAVIGATION BAR ══════════════ */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '2.5rem',
-          borderBottom: '1px solid #DDE2F0',
-          marginBottom: '2rem',
-        }}
-      >
+      <div className="responsive-tabs-scroll">
         {(['Overview', 'Events', 'Venue', 'Eligibility', 'Contact'] as const).map((tab) => {
           const isActive = activeTab === tab;
           return (
@@ -365,15 +358,7 @@ const EventDetails: React.FC<Props> = ({ event, onUpdate }) => {
       </div>
 
       {/* ══════════════ 4. MAIN BODY (2 COLUMNS) ══════════════ */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1.8fr) minmax(320px, 1fr)',
-          gap: '2.5rem',
-          alignItems: 'flex-start',
-        }}
-        className="event-details-layout"
-      >
+      <div className="responsive-details-layout">
         {/* ── LEFT COLUMN ── */}
         <div>
           {/* About the Event Section */}

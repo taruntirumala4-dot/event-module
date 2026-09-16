@@ -55,7 +55,7 @@ const Footer: React.FC = () => (
       padding: '2.5rem 1.5rem',
       borderBottom: '1px solid rgba(221, 226, 240, 0.12)',
     }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.5rem' }}>
+      <div style={{ maxWidth: 1320, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.5rem' }}>
         <div>
           <p style={{ fontSize: '0.75rem', color: '#7AD9E8', margin: '0 0 0.375rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>
             A BRIGHTER TOMORROW
@@ -108,7 +108,7 @@ const Footer: React.FC = () => (
     </div>
 
     {/* Footer links */}
-    <div style={{ maxWidth: 1280, margin: '0 auto', padding: '2.5rem 1.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '2rem' }}>
+    <div style={{ maxWidth: 1320, margin: '0 auto', padding: '2.5rem 1.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '2rem' }}>
       {/* Brand */}
       <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
@@ -198,7 +198,7 @@ const Footer: React.FC = () => (
     <div style={{
       borderTop: '1px solid rgba(221, 226, 240, 0.12)',
       padding: '1rem 1.5rem',
-      maxWidth: 1280,
+      maxWidth: 1320,
       margin: '0 auto',
       display: 'flex',
       alignItems: 'center',

@@ -94,13 +94,7 @@ const EventList: React.FC<Props> = ({ events, showStatus = false, bookmarkedIds,
   }
 
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-        gap: '1.25rem',
-      }}
-    >
+    <div className="responsive-cards-grid">
       {events.map((event) => (
         <div key={event.id} className="fade-in">
           <EventCard

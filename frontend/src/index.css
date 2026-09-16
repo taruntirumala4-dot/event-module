@@ -335,9 +335,114 @@ h1, h2, h3, h4, h5, h6, .heading {
 
 /* Page container */
 .page-container {
-  max-width: 1280px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 1.75rem 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .page-container {
+    padding: 1.25rem 1rem;
+  }
+}
+
+/* Responsive visibility utilities */
+@media (max-width: 768px) {
+  .hidden-mobile {
+    display: none !important;
+  }
+  .show-mobile {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .hidden-mobile {
+    display: flex !important;
+  }
+  .show-mobile {
+    display: none !important;
+  }
+}
+
+/* 2-Column responsive layout for Events Page (Sidebar + Main Content) */
+.responsive-events-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+@media (min-width: 1024px) {
+  .responsive-events-grid {
+    grid-template-columns: 270px minmax(0, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Responsive Event Cards Grid */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.responsive-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 480px) {
+  .responsive-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Responsive Event Details Page Grid */
+.responsive-details-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+  align-items: flex-start;
+}
+
+@media (min-width: 1024px) {
+  .responsive-details-layout {
+    grid-template-columns: minmax(0, 1.8fr) minmax(320px, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+/* Responsive Form 2-Column Grid */
+.responsive-form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .responsive-form-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Horizontal Scrollable Tabs Navigation for Mobile */
+.responsive-tabs-scroll {
+  display: flex;
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.responsive-tabs-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 /* Hero gradient background (Section 7) */
@@ -416,3 +521,4 @@ h1, h2, h3, h4, h5, h6, .heading {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+

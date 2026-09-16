@@ -162,7 +162,7 @@ const EventForm: React.FC<Props> = ({
             {errors.description && <p style={{ color: '#9A2A2A', fontSize: '0.75rem', margin: '0.25rem 0 0', fontWeight: 600 }}>{errors.description}</p>}
           </FormField>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="responsive-form-grid-2">
             <FormField label="Category" required>
               <select
                 value={form.category}
@@ -227,7 +227,7 @@ const EventForm: React.FC<Props> = ({
           Location & Schedule
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="responsive-form-grid-2">
             <FormField label="Location / City" required>
               <input
                 type="text"
@@ -251,7 +251,7 @@ const EventForm: React.FC<Props> = ({
             </FormField>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="responsive-form-grid-2">
             <FormField label="Start Date" required>
               <input
                 type="date"
@@ -274,7 +274,7 @@ const EventForm: React.FC<Props> = ({
             </FormField>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="responsive-form-grid-2">
             <FormField label="Start Time" required>
               <input
                 type="time"
@@ -303,7 +303,7 @@ const EventForm: React.FC<Props> = ({
           Registration Details
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="responsive-form-grid-2">
             <FormField label="Registration Deadline" required>
               <input
                 type="date"

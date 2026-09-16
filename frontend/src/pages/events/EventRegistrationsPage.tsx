@@ -112,47 +112,49 @@ const EventRegistrationsPage: React.FC = () => {
             background: '#FFFFFF',
             border: '1px solid #DDE2F0',
             borderRadius: 14,
-            overflow: 'hidden',
+            overflowX: 'auto',
             boxShadow: '0 4px 18px rgba(11, 30, 74, 0.04)',
+            WebkitOverflowScrolling: 'touch',
           }}
         >
-          {/* Header */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '2fr 2fr 1fr',
-              padding: '0.875rem 1.25rem',
-              background: '#F7F8FC',
-              borderBottom: '1px solid #DDE2F0',
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              color: '#5B6487',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-            }}
-          >
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-              <User size={12} /> Student
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-              <Mail size={12} /> Email
-            </span>
-            <span>Registered</span>
-          </div>
-
-          {/* Rows */}
-          {registrations.map((reg, i) => (
+          <div style={{ minWidth: 560 }}>
+            {/* Header */}
             <div
-              key={reg.id}
-              className="fade-in"
               style={{
                 display: 'grid',
                 gridTemplateColumns: '2fr 2fr 1fr',
                 padding: '0.875rem 1.25rem',
-                borderBottom: i < registrations.length - 1 ? '1px solid #ECEFF8' : 'none',
-                alignItems: 'center',
-                transition: 'background 0.15s',
+                background: '#F7F8FC',
+                borderBottom: '1px solid #DDE2F0',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                color: '#5B6487',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
               }}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                <User size={12} /> Student
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                <Mail size={12} /> Email
+              </span>
+              <span>Registered</span>
+            </div>
+
+            {/* Rows */}
+            {registrations.map((reg, i) => (
+              <div
+                key={reg.id}
+                className="fade-in"
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '2fr 2fr 1fr',
+                  padding: '0.875rem 1.25rem',
+                  borderBottom: i < registrations.length - 1 ? '1px solid #ECEFF8' : 'none',
+                  alignItems: 'center',
+                  transition: 'background 0.15s',
+                }}
               onMouseEnter={(e) => ((e.currentTarget as HTMLDivElement).style.background = '#F9FAFD')}
               onMouseLeave={(e) => ((e.currentTarget as HTMLDivElement).style.background = 'transparent')}
             >
@@ -186,6 +188,7 @@ const EventRegistrationsPage: React.FC = () => {
               </span>
             </div>
           ))}
+          </div>
         </div>
       )}
 
