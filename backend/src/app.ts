@@ -16,9 +16,26 @@ const app = express();
 
 // ─── SECURITY ───────────────────────────────────────────────────────────────
 app.use(helmet());
+
+const configuredOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,https://eventmodule.netlify.app')
+  .split(',')
+  .map((origin) => origin.trim().replace(/\/$/, ''))
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const cleanOrigin = origin.replace(/\/$/, '');
+      if (
+        configuredOrigins.includes('*') ||
+        configuredOrigins.includes(cleanOrigin) ||
+        cleanOrigin.endsWith('.netlify.app')
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
   })
 );

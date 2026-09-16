@@ -12,8 +12,8 @@ async function bootstrap() {
     await prisma.$connect();
     console.log('✅ Database connected successfully');
 
-    app.listen(PORT, () => {
-      console.log(`\n🚀 Event Module API running on http://localhost:${PORT}`);
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`\n🚀 Event Module API running on port ${PORT}`);
       console.log(`📋 Health check: http://localhost:${PORT}/health`);
       console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}\n`);
     });
