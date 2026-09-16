@@ -21,7 +21,7 @@ const EventSearch: React.FC<Props> = ({
           left: '0.875rem',
           top: '50%',
           transform: 'translateY(-50%)',
-          color: '#94a3b8',
+          color: '#7C849E',
           pointerEvents: 'none',
         }}
       />
@@ -31,7 +31,14 @@ const EventSearch: React.FC<Props> = ({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className="input"
-        style={{ paddingLeft: '2.5rem', paddingRight: value ? '2.5rem' : '0.875rem' }}
+        style={{
+          paddingLeft: '2.5rem',
+          paddingRight: value ? '2.5rem' : '0.875rem',
+          borderRadius: '999px',
+          background: '#FFFFFF',
+          border: '1px solid #DDE2F0',
+          boxShadow: '0 2px 8px rgba(11, 30, 74, 0.04)',
+        }}
       />
       {value && (
         <button
@@ -43,7 +50,7 @@ const EventSearch: React.FC<Props> = ({
             transform: 'translateY(-50%)',
             background: 'none',
             border: 'none',
-            color: '#94a3b8',
+            color: '#7C849E',
             cursor: 'pointer',
             padding: 0,
             display: 'flex',

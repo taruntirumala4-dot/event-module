@@ -56,13 +56,13 @@ const EventBookmark: React.FC<Props> = ({ eventId, initialBookmarked = false, on
       style={{
         width: '100%',
         justifyContent: 'center',
-        padding: '0.75rem',
+        padding: '0.65rem 1.25rem',
         gap: '0.5rem',
-        background: bookmarked ? '#fef3c7' : '#ffffff',
-        border: `1.5px solid ${bookmarked ? '#fde68a' : '#e2e8f0'}`,
-        color: bookmarked ? '#92400e' : '#334155',
+        background: bookmarked ? '#FFE2EB' : '#FFFFFF',
+        border: `1px solid ${bookmarked ? '#C1205B' : '#DDE2F0'}`,
+        color: bookmarked ? '#C1205B' : '#0B1E4A',
         fontWeight: 600,
-        borderRadius: '8px',
+        borderRadius: '999px',
         cursor: 'pointer',
         transition: 'all 0.15s ease',
       }}
@@ -72,9 +72,9 @@ const EventBookmark: React.FC<Props> = ({ eventId, initialBookmarked = false, on
       {loading ? (
         <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
       ) : bookmarked ? (
-        <BookmarkCheck size={16} color="#d97706" />
+        <BookmarkCheck size={16} color="#C1205B" />
       ) : (
-        <Bookmark size={16} color="#64748b" />
+        <Bookmark size={16} color="#0B1E4A" />
       )}
       {bookmarked ? 'Saved in Library' : 'Save Event'}
     </button>

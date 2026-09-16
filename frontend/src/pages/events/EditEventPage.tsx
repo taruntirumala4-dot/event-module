@@ -18,7 +18,7 @@ const EditEventPage: React.FC = () => {
   if (loading) {
     return (
       <div className="page-container" style={{ textAlign: 'center', padding: '4rem' }}>
-        <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: '#64748b' }} />
+        <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: '#2E58D7', margin: '0 auto' }} />
       </div>
     );
   }
@@ -26,7 +26,7 @@ const EditEventPage: React.FC = () => {
   if (error || !event) {
     return (
       <div className="page-container" style={{ textAlign: 'center', padding: '4rem' }}>
-        <p style={{ color: '#f87171' }}>⚠️ {error || 'Event not found'}</p>
+        <p style={{ color: '#9A2A2A', fontWeight: 600 }}>⚠️ {error || 'Event not found'}</p>
         <Link to="/events" className="btn btn-secondary" style={{ display: 'inline-flex', marginTop: '1rem' }}>
           Back to Events
         </Link>
@@ -41,7 +41,7 @@ const EditEventPage: React.FC = () => {
   if (!canEdit) {
     return (
       <div className="page-container" style={{ textAlign: 'center', padding: '4rem' }}>
-        <p style={{ color: '#f87171', fontSize: '1.125rem' }}>🚫 You do not have permission to edit this event.</p>
+        <p style={{ color: '#9A2A2A', fontSize: '1.125rem', fontWeight: 600 }}>🚫 You do not have permission to edit this event.</p>
       </div>
     );
   }
@@ -66,12 +66,14 @@ const EditEventPage: React.FC = () => {
           <ArrowLeft size={15} /> Back to Event
         </Link>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-          <Edit size={22} color="#2563eb" />
-          <h1 style={{ color: '#0f172a', fontSize: '1.75rem', fontWeight: 800, margin: 0 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Edit size={20} color="#2E58D7" />
+          </div>
+          <h1 style={{ color: '#0B1E4A', fontSize: '1.75rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>
             Edit Event
           </h1>
         </div>
-        <p style={{ color: '#64748b', marginTop: '0.375rem', marginBottom: 0, fontSize: '0.875rem' }}>
+        <p style={{ color: '#5B6487', marginTop: '0.375rem', marginBottom: 0, fontSize: '0.875rem' }}>
           {event.title}
         </p>
       </div>

@@ -36,7 +36,7 @@ const RegisterPage: React.FC = () => {
       display: 'flex',
       background: 'linear-gradient(135deg, #f0f4ff 0%, #faf5ff 50%, #fff0f6 100%)',
     }}>
-      {/* Left branding panel */}
+      {/* Left branding panel (Section 10 Dark Sections) */}
       <div style={{
         flex: 1,
         display: 'flex',
@@ -44,27 +44,27 @@ const RegisterPage: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '3rem',
-        background: 'linear-gradient(135deg, #2d1b69 0%, #1e3a8a 100%)',
-        color: '#ffffff',
+        background: 'linear-gradient(135deg, #091838 0%, #0B1E4A 100%)',
+        color: '#FFFFFF',
       }} className="auth-left-panel">
         <div style={{ maxWidth: 400, textAlign: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.625rem', marginBottom: '2rem' }}>
             <div style={{
               width: 32,
               height: 32,
-              background: 'linear-gradient(135deg, #a78bfa, #60a5fa)',
+              background: 'linear-gradient(135deg, #2E58D7, #00CBE8)',
               clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
             }} />
-            <span style={{ fontSize: '1.25rem', fontWeight: 800 }}>
-              Event<span style={{ color: '#a78bfa' }}>Sphere</span>
+            <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.035em' }}>
+              Intern<span style={{ color: '#00CBE8' }}>Atlas</span>
             </span>
           </div>
 
-          <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 800, margin: '0 0 1rem', lineHeight: 1.2 }}>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 800, margin: '0 0 1rem', lineHeight: 1.2, letterSpacing: '-0.035em' }}>
             Same students.<br />
-            <span style={{ color: '#a78bfa', fontStyle: 'italic' }}>Bigger futures.</span>
+            <span className="editorial-italic" style={{ fontFamily: '"DM Serif Display", Georgia, serif', fontStyle: 'italic', color: '#7AD9E8' }}>Bigger futures.</span>
           </h2>
-          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9375rem', lineHeight: 1.6, margin: '0 0 2rem' }}>
+          <p style={{ color: '#DDE2F0', fontSize: '0.9375rem', lineHeight: 1.6, margin: '0 0 2rem' }}>
             Create your free profile and unlock access to thousands of opportunities tailored for you.
           </p>
 
@@ -79,13 +79,15 @@ const RegisterPage: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem',
-              background: 'rgba(255,255,255,0.07)',
-              borderRadius: '8px',
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(221, 226, 240, 0.1)',
+              borderRadius: '10px',
               padding: '0.625rem 1rem',
               marginBottom: '0.5rem',
               fontSize: '0.875rem',
-              color: 'rgba(255,255,255,0.85)',
+              color: '#DDE2F0',
               textAlign: 'left',
+              fontWeight: 500,
             }}>
               {item}
             </div>
@@ -100,7 +102,7 @@ const RegisterPage: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '2rem 1.5rem',
-        background: '#ffffff',
+        background: '#FFFFFF',
         minWidth: 0,
         overflowY: 'auto',
       }}>
@@ -110,19 +112,19 @@ const RegisterPage: React.FC = () => {
             <div style={{
               width: 26,
               height: 26,
-              background: 'linear-gradient(135deg, #2563eb, #7c3aed)',
+              background: 'linear-gradient(135deg, #2E58D7, #00CBE8)',
               clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
             }} />
-            <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1e293b' }}>
-              Event<span style={{ color: '#2563eb' }}>Sphere</span>
+            <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0B1E4A' }}>
+              Intern<span style={{ color: '#2E58D7' }}>Atlas</span>
             </span>
           </div>
 
-          <h1 style={{ fontSize: '1.625rem', fontWeight: 800, color: '#1e293b', margin: '0 0 0.375rem' }}>
+          <h1 style={{ fontSize: '1.625rem', fontWeight: 800, color: '#0B1E4A', margin: '0 0 0.375rem', letterSpacing: '-0.035em' }}>
             Create your account ✨
           </h1>
-          <p style={{ color: '#64748b', fontSize: '0.9375rem', margin: '0 0 2rem' }}>
-            Join the EventSphere platform — it's free!
+          <p style={{ color: '#5B6487', fontSize: '0.9375rem', margin: '0 0 2rem' }}>
+            Join the InternAtlas platform — it's free!
           </p>
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -173,11 +175,11 @@ const RegisterPage: React.FC = () => {
                     onClick={() => set('role', role)}
                     style={{
                       padding: '0.75rem 1rem',
-                      borderRadius: '8px',
-                      border: `1.5px solid ${form.role === role ? '#2563eb' : '#e2e8f0'}`,
-                      background: form.role === role ? '#eff6ff' : '#ffffff',
-                      color: form.role === role ? '#2563eb' : '#475569',
-                      fontWeight: 600,
+                      borderRadius: '14px',
+                      border: `1px solid ${form.role === role ? '#2E58D7' : '#DDE2F0'}`,
+                      background: form.role === role ? '#EFF1F9' : '#FFFFFF',
+                      color: form.role === role ? '#2E58D7' : '#0B1E4A',
+                      fontWeight: 700,
                       fontSize: '0.875rem',
                       cursor: 'pointer',
                       fontFamily: 'inherit',
@@ -186,6 +188,7 @@ const RegisterPage: React.FC = () => {
                       flexDirection: 'column',
                       alignItems: 'center',
                       gap: '0.25rem',
+                      boxShadow: '0 2px 6px rgba(11, 30, 74, 0.04)',
                     }}
                   >
                     <span style={{ fontSize: '1.25rem' }}>{role === 'STUDENT' ? '🎓' : '🎪'}</span>
@@ -201,9 +204,9 @@ const RegisterPage: React.FC = () => {
               style={{
                 width: '100%',
                 padding: '0.75rem',
-                borderRadius: '8px',
-                background: '#1e293b',
-                color: '#ffffff',
+                borderRadius: '999px',
+                background: '#2E58D7',
+                color: '#FFFFFF',
                 fontWeight: 700,
                 fontSize: '0.9375rem',
                 border: 'none',
@@ -215,17 +218,20 @@ const RegisterPage: React.FC = () => {
                 transition: 'background 0.15s',
                 opacity: loading ? 0.7 : 1,
                 marginTop: '0.5rem',
+                boxShadow: '0 4px 14px rgba(46, 88, 215, 0.25)',
               }}
               id="reg-submit"
+              onMouseEnter={e => (e.currentTarget.style.background = '#1C3FA8')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#2E58D7')}
             >
               {loading ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <UserPlus size={16} />}
               {loading ? 'Creating...' : 'Create Free Account'}
             </button>
           </form>
 
-          <p style={{ textAlign: 'center', color: '#64748b', fontSize: '0.875rem', marginTop: '1.5rem' }}>
+          <p style={{ textAlign: 'center', color: '#5B6487', fontSize: '0.875rem', marginTop: '1.5rem' }}>
             Already have an account?{' '}
-            <Link to="/login" style={{ color: '#2563eb', fontWeight: 700, textDecoration: 'none' }}>
+            <Link to="/login" style={{ color: '#2E58D7', fontWeight: 700, textDecoration: 'none' }}>
               Sign in
             </Link>
           </p>

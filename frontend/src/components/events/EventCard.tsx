@@ -20,11 +20,11 @@ interface Props {
   bookmarkLoading?: boolean;
 }
 
-// Maps category → light background pill colors
-const getCategoryPillStyle = (color: string) => ({
-  background: `${color}18`,
-  color: color,
-  border: `1px solid ${color}30`,
+// Maps category → light background pill colors (Section 13)
+const getCategoryPillStyle = () => ({
+  background: '#EFF1F9',
+  color: '#2E58D7',
+  border: '1px solid #E8EBF4',
 });
 
 const EventCard: React.FC<Props> = ({
@@ -35,7 +35,6 @@ const EventCard: React.FC<Props> = ({
   bookmarkLoading = false,
 }) => {
   const deadlinePassed = isDeadlinePassed(event.registrationDeadline);
-  const categoryColor = getCategoryColor(event.category);
   const modeLabel = getModeLabel(event.mode);
   const registered = event._count?.registrations ?? 0;
   const isFull = registered >= event.capacity;
@@ -46,18 +45,26 @@ const EventCard: React.FC<Props> = ({
 
   // Generate a subtle branded bg for the image placeholder
   const gradients = [
-    'linear-gradient(135deg, #dbeafe 0%, #ede9fe 100%)',
-    'linear-gradient(135deg, #dcfce7 0%, #d1fae5 100%)',
-    'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-    'linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)',
-    'linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 100%)',
+    'linear-gradient(135deg, #EFF1F9 0%, #E7EDFF 100%)',
+    'linear-gradient(135deg, #E8F9FC 0%, #EFF1F9 100%)',
+    'linear-gradient(135deg, #FFE2EB 0%, #EFF1F9 100%)',
+    'linear-gradient(135deg, #EFF1F9 0%, #FFE2EB 100%)',
+    'linear-gradient(135deg, #E7EDFF 0%, #E8F9FC 100%)',
   ];
   const cardGradient = gradients[event.title.length % gradients.length];
 
   return (
     <div
       className="event-card card-light"
-      style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+      style={{
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        background: '#FFFFFF',
+        border: '1px solid #DDE2F0',
+        borderRadius: 14,
+        boxShadow: '0 4px 18px rgba(11, 30, 74, 0.06)',
+      }}
     >
       {/* Image / Banner */}
       <div style={{ position: 'relative', height: 160, overflow: 'hidden', flexShrink: 0, background: cardGradient }}>
@@ -74,7 +81,7 @@ const EventCard: React.FC<Props> = ({
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 50%)',
+            background: 'linear-gradient(to top, rgba(11,30,74,0.45) 0%, transparent 50%)',
           }}
         />
 
@@ -85,9 +92,10 @@ const EventCard: React.FC<Props> = ({
             top: 10,
             left: 10,
             background: 'rgba(255,255,255,0.92)',
-            color: '#475569',
-            padding: '2px 8px',
-            borderRadius: '9999px',
+            color: '#0B1E4A',
+            border: '1px solid #DDE2F0',
+            padding: '2px 10px',
+            borderRadius: '999px',
             fontSize: '0.65rem',
             fontWeight: 700,
             letterSpacing: '0.04em',
@@ -110,19 +118,19 @@ const EventCard: React.FC<Props> = ({
               position: 'absolute',
               top: 8,
               right: 10,
-              background: isBookmarked ? '#fef3c7' : 'rgba(255,255,255,0.9)',
+              background: isBookmarked ? '#FFE2EB' : 'rgba(255,255,255,0.92)',
               backdropFilter: 'blur(8px)',
-              border: 'none',
-              borderRadius: '8px',
-              width: 30,
-              height: 30,
+              border: '1px solid #DDE2F0',
+              borderRadius: '999px',
+              width: 32,
+              height: 32,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              color: isBookmarked ? '#d97706' : '#64748b',
+              color: isBookmarked ? '#C1205B' : '#0B1E4A',
               transition: 'all 0.2s',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+              boxShadow: '0 2px 6px rgba(11,30,74,0.08)',
             }}
             aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark event'}
           >
@@ -143,11 +151,11 @@ const EventCard: React.FC<Props> = ({
             position: 'absolute',
             bottom: 8,
             left: 10,
-            background: '#fef2f2',
-            color: '#dc2626',
-            border: '1px solid #fecaca',
+            background: '#FFE2EB',
+            color: '#9A2A2A',
+            border: '1px solid #C1205B',
             padding: '2px 8px',
-            borderRadius: '9999px',
+            borderRadius: '999px',
             fontSize: '0.65rem',
             fontWeight: 700,
           }}>
@@ -157,13 +165,13 @@ const EventCard: React.FC<Props> = ({
       </div>
 
       {/* Card Body */}
-      <div style={{ padding: '0.875rem 1rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+      <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
 
-        {/* Category + Mode tags */}
+        {/* Category tag */}
         <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap' }}>
           <span
             className="tag-pill"
-            style={getCategoryPillStyle(categoryColor)}
+            style={getCategoryPillStyle()}
           >
             {getCategoryLabel(event.category)}
           </span>
@@ -172,9 +180,10 @@ const EventCard: React.FC<Props> = ({
         {/* Title */}
         <h3
           style={{
-            color: '#1e293b',
+            color: '#0B1E4A',
             fontSize: '0.9375rem',
-            fontWeight: 700,
+            fontWeight: 800,
+            letterSpacing: '-0.02em',
             margin: 0,
             lineHeight: 1.35,
             display: '-webkit-box',
@@ -186,21 +195,21 @@ const EventCard: React.FC<Props> = ({
           {event.title}
         </h3>
 
-        {/* Organizer / description snippet */}
+        {/* Organizer snippet */}
         {event.organizer?.name && (
-          <p style={{ fontSize: '0.75rem', color: '#64748b', margin: 0, fontWeight: 500 }}>
+          <p style={{ fontSize: '0.75rem', color: '#5B6487', margin: 0, fontWeight: 500 }}>
             {event.organizer.name}
           </p>
         )}
 
         {/* Meta row */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', marginTop: '0.125rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#64748b', fontSize: '0.8rem' }}>
-            <Calendar size={12} style={{ flexShrink: 0, color: '#94a3b8' }} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', marginTop: '0.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#5B6487', fontSize: '0.8rem' }}>
+            <Calendar size={13} style={{ flexShrink: 0, color: '#2E58D7' }} />
             {formatDateRange(event.startDate, event.endDate)}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#64748b', fontSize: '0.8rem' }}>
-            <MapPin size={12} style={{ flexShrink: 0, color: '#94a3b8' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#5B6487', fontSize: '0.8rem' }}>
+            <MapPin size={13} style={{ flexShrink: 0, color: '#00CBE8' }} />
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {event.location}
             </span>
@@ -211,15 +220,15 @@ const EventCard: React.FC<Props> = ({
               alignItems: 'center',
               gap: '0.4rem',
               fontSize: '0.8rem',
-              color: deadlinePassed ? '#dc2626' : '#64748b',
+              color: deadlinePassed ? '#9A2A2A' : '#5B6487',
             }}
           >
-            <Clock size={12} style={{ flexShrink: 0, color: deadlinePassed ? '#dc2626' : '#94a3b8' }} />
+            <Clock size={13} style={{ flexShrink: 0, color: deadlinePassed ? '#9A2A2A' : '#7C849E' }} />
             {deadlinePassed ? 'Registration closed' : `Deadline: ${formatDate(event.registrationDeadline)}`}
           </div>
         </div>
 
-        {/* View Details Button */}
+        {/* View Details Button (Section 5: Primary Blue pill) */}
         <Link
           to={`/events/${event.id}`}
           style={{
@@ -227,23 +236,25 @@ const EventCard: React.FC<Props> = ({
             alignItems: 'center',
             justifyContent: 'center',
             gap: '0.375rem',
-            padding: '0.5rem 1rem',
-            borderRadius: '8px',
-            background: deadlinePassed || isFull ? '#f1f5f9' : '#1e293b',
-            color: deadlinePassed || isFull ? '#94a3b8' : '#ffffff',
-            fontWeight: 600,
+            padding: '0.55rem 1rem',
+            borderRadius: '999px',
+            background: deadlinePassed || isFull ? '#EFF1F9' : '#2E58D7',
+            color: deadlinePassed || isFull ? '#7C849E' : '#FFFFFF',
+            border: deadlinePassed || isFull ? '1px solid #DDE2F0' : 'none',
+            fontWeight: 700,
             fontSize: '0.8125rem',
             textDecoration: 'none',
             transition: 'all 0.2s',
             marginTop: '0.5rem',
+            boxShadow: deadlinePassed || isFull ? 'none' : '0 4px 12px rgba(46, 88, 215, 0.25)',
           }}
           onMouseEnter={e => {
             if (!deadlinePassed && !isFull) {
-              (e.currentTarget as HTMLAnchorElement).style.background = '#0f172a';
+              (e.currentTarget as HTMLAnchorElement).style.background = '#1C3FA8';
             }
           }}
           onMouseLeave={e => {
-            (e.currentTarget as HTMLAnchorElement).style.background = deadlinePassed || isFull ? '#f1f5f9' : '#1e293b';
+            (e.currentTarget as HTMLAnchorElement).style.background = deadlinePassed || isFull ? '#EFF1F9' : '#2E58D7';
           }}
         >
           {deadlinePassed ? 'View Event' : isFull ? 'Event Full' : 'View Details'}

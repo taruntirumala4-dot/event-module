@@ -140,20 +140,20 @@ const AdminEventsPage: React.FC = () => {
   const rejectedCount = events.filter((e) => e.status === 'REJECTED').length;
 
   return (
-    <div className="min-h-screen bg-[#0f0f1a] py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#EFF1F9] py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#DDE2F0] pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400">
+              <div className="p-2.5 rounded-2xl bg-[#FFE2EB] text-[#C1205B]">
                 <ShieldCheck className="w-7 h-7" />
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0B1E4A] tracking-tight">
                   Event Moderation & Approvals
                 </h1>
-                <p className="text-sm text-slate-400 mt-0.5">
+                <p className="text-sm text-[#5B6487] mt-0.5">
                   Review submitted campus events, inspect details, approve publications, or provide rejection feedback.
                 </p>
               </div>
@@ -162,7 +162,7 @@ const AdminEventsPage: React.FC = () => {
           <button
             onClick={fetchEvents}
             disabled={loading}
-            className="self-start md:self-auto btn bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 text-xs px-4 py-2"
+            className="self-start md:self-auto btn btn-secondary text-xs px-4 py-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Refresh List'}
           </button>
@@ -174,79 +174,79 @@ const AdminEventsPage: React.FC = () => {
             onClick={() => setActiveTab('ALL')}
             className={`cursor-pointer p-5 rounded-2xl border transition-all ${
               activeTab === 'ALL'
-                ? 'bg-indigo-950/40 border-indigo-500/50 ring-2 ring-indigo-500/20'
-                : 'bg-[#1a1a2e]/70 border-white/10 hover:border-white/20'
+                ? 'bg-[#FFFFFF] border-[#2E58D7] ring-2 ring-[#2E58D7]/20 shadow-md'
+                : 'bg-[#FFFFFF] border-[#DDE2F0] hover:border-[#7AD9E8] shadow-sm'
             }`}
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Events</span>
-              <Layers className="w-5 h-5 text-indigo-400" />
+              <span className="text-xs font-bold uppercase tracking-wider text-[#5B6487]">Total Events</span>
+              <Layers className="w-5 h-5 text-[#2E58D7]" />
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-white mt-2">{totalCount}</div>
-            <span className="text-[11px] text-slate-400 mt-1 block">All registered event listings</span>
+            <div className="text-2xl sm:text-3xl font-extrabold text-[#0B1E4A] mt-2">{totalCount}</div>
+            <span className="text-[11px] text-[#9199B5] mt-1 block">All registered event listings</span>
           </div>
 
           <div
             onClick={() => setActiveTab('PENDING')}
             className={`cursor-pointer p-5 rounded-2xl border transition-all ${
               activeTab === 'PENDING'
-                ? 'bg-amber-950/40 border-amber-500/50 ring-2 ring-amber-500/20'
-                : 'bg-[#1a1a2e]/70 border-white/10 hover:border-white/20'
+                ? 'bg-[#FFFFFF] border-[#F59E0B] ring-2 ring-[#F59E0B]/20 shadow-md'
+                : 'bg-[#FFFFFF] border-[#DDE2F0] hover:border-[#7AD9E8] shadow-sm'
             }`}
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-amber-400">Pending Review</span>
-              <Clock className="w-5 h-5 text-amber-400" />
+              <span className="text-xs font-bold uppercase tracking-wider text-[#B45309]">Pending Review</span>
+              <Clock className="w-5 h-5 text-[#F59E0B]" />
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-amber-300 mt-2">{pendingCount}</div>
-            <span className="text-[11px] text-amber-400/80 mt-1 block">Awaiting admin moderation</span>
+            <div className="text-2xl sm:text-3xl font-extrabold text-[#B45309] mt-2">{pendingCount}</div>
+            <span className="text-[11px] text-[#5B6487] mt-1 block">Awaiting admin moderation</span>
           </div>
 
           <div
             onClick={() => setActiveTab('APPROVED')}
             className={`cursor-pointer p-5 rounded-2xl border transition-all ${
               activeTab === 'APPROVED'
-                ? 'bg-emerald-950/40 border-emerald-500/50 ring-2 ring-emerald-500/20'
-                : 'bg-[#1a1a2e]/70 border-white/10 hover:border-white/20'
+                ? 'bg-[#FFFFFF] border-[#10B981] ring-2 ring-[#10B981]/20 shadow-md'
+                : 'bg-[#FFFFFF] border-[#DDE2F0] hover:border-[#7AD9E8] shadow-sm'
             }`}
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400">Approved</span>
-              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <span className="text-xs font-bold uppercase tracking-wider text-[#047857]">Approved</span>
+              <CheckCircle2 className="w-5 h-5 text-[#10B981]" />
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-emerald-300 mt-2">{approvedCount}</div>
-            <span className="text-[11px] text-emerald-400/80 mt-1 block">Live on discover feed</span>
+            <div className="text-2xl sm:text-3xl font-extrabold text-[#047857] mt-2">{approvedCount}</div>
+            <span className="text-[11px] text-[#5B6487] mt-1 block">Live on discover feed</span>
           </div>
 
           <div
             onClick={() => setActiveTab('REJECTED')}
             className={`cursor-pointer p-5 rounded-2xl border transition-all ${
               activeTab === 'REJECTED'
-                ? 'bg-rose-950/40 border-rose-500/50 ring-2 ring-rose-500/20'
-                : 'bg-[#1a1a2e]/70 border-white/10 hover:border-white/20'
+                ? 'bg-[#FFFFFF] border-[#9A2A2A] ring-2 ring-[#9A2A2A]/20 shadow-md'
+                : 'bg-[#FFFFFF] border-[#DDE2F0] hover:border-[#7AD9E8] shadow-sm'
             }`}
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-rose-400">Rejected</span>
-              <XCircle className="w-5 h-5 text-rose-400" />
+              <span className="text-xs font-bold uppercase tracking-wider text-[#9A2A2A]">Rejected</span>
+              <XCircle className="w-5 h-5 text-[#9A2A2A]" />
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-rose-300 mt-2">{rejectedCount}</div>
-            <span className="text-[11px] text-rose-400/80 mt-1 block">Returned with feedback</span>
+            <div className="text-2xl sm:text-3xl font-extrabold text-[#9A2A2A] mt-2">{rejectedCount}</div>
+            <span className="text-[11px] text-[#5B6487] mt-1 block">Returned with feedback</span>
           </div>
         </div>
 
         {/* Search & Filter Controls */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Status Tabs */}
-          <div className="flex items-center bg-[#1a1a2e] p-1 rounded-xl border border-white/10 w-full sm:w-auto">
+          <div className="flex items-center bg-[#FFFFFF] p-1.5 rounded-full border border-[#DDE2F0] shadow-sm w-full sm:w-auto">
             {(['ALL', 'PENDING', 'APPROVED', 'REJECTED'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                className={`flex-1 sm:flex-initial px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
                   activeTab === tab
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-[#2E58D7] text-white shadow-sm'
+                    : 'text-[#5B6487] hover:text-[#0B1E4A]'
                 }`}
               >
                 {tab}
@@ -256,37 +256,37 @@ const AdminEventsPage: React.FC = () => {
 
           {/* Search Input */}
           <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#9199B5] absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by title, category, host..."
-              className="w-full pl-9.5 pr-4 py-2 bg-[#1a1a2e] border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+              className="w-full pl-9.5 pr-4 py-2 bg-[#FFFFFF] border border-[#DDE2F0] rounded-full text-xs text-[#0B1E4A] placeholder-[#9199B5] focus:outline-none focus:border-[#2E58D7] transition-colors shadow-sm"
             />
           </div>
         </div>
 
         {/* Events Table / Card Feed */}
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <Loader2 className="w-8 h-8 animate-spin text-indigo-400 mb-3" />
+          <div className="flex flex-col items-center justify-center py-20 text-[#5B6487]">
+            <Loader2 className="w-8 h-8 animate-spin text-[#2E58D7] mb-3" />
             <p className="text-sm">Loading events for moderation...</p>
           </div>
         ) : filteredEvents.length === 0 ? (
-          <div className="bg-[#1a1a2e]/50 border border-white/10 rounded-2xl p-12 text-center">
-            <AlertCircle className="w-12 h-12 text-slate-500 mx-auto mb-3" />
-            <h3 className="text-base font-semibold text-white">No events found</h3>
-            <p className="text-sm text-slate-400 mt-1 max-w-md mx-auto">
+          <div className="bg-[#FFFFFF] border border-[#DDE2F0] rounded-2xl p-12 text-center shadow-sm">
+            <AlertCircle className="w-12 h-12 text-[#9199B5] mx-auto mb-3" />
+            <h3 className="text-base font-bold text-[#0B1E4A]">No events found</h3>
+            <p className="text-sm text-[#5B6487] mt-1 max-w-md mx-auto">
               No events matched the selected status tab and search criteria.
             </p>
           </div>
         ) : (
-          <div className="bg-[#1a1a2e]/60 border border-white/10 rounded-2xl overflow-hidden shadow-xl">
+          <div className="bg-[#FFFFFF] border border-[#DDE2F0] rounded-2xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-sm">
                 <thead>
-                  <tr className="border-b border-white/10 bg-white/[0.02] text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                  <tr className="border-b border-[#DDE2F0] bg-[#F7F8FC] text-[#5B6487] text-xs font-bold uppercase tracking-wider">
                     <th className="py-3.5 px-4">Event</th>
                     <th className="py-3.5 px-4">Category & Mode</th>
                     <th className="py-3.5 px-4">Organizer</th>
@@ -295,16 +295,16 @@ const AdminEventsPage: React.FC = () => {
                     <th className="py-3.5 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-[#ECEFF8]">
                   {filteredEvents.map((ev) => {
                     const isActing = actionLoadingId === ev.id;
 
                     return (
-                      <tr key={ev.id} className="hover:bg-white/[0.02] transition-colors group">
+                      <tr key={ev.id} className="hover:bg-[#F9FAFD] transition-colors group">
                         {/* Event Title & Image */}
                         <td className="py-4 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-lg bg-slate-800 flex-shrink-0 overflow-hidden border border-white/10">
+                            <div className="w-12 h-12 rounded-xl bg-[#EFF1F9] flex-shrink-0 overflow-hidden border border-[#DDE2F0]">
                               {ev.image ? (
                                 <img
                                   src={ev.image}
@@ -312,7 +312,7 @@ const AdminEventsPage: React.FC = () => {
                                   className="w-full h-full object-cover"
                                 />
                               ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-indigo-950/50 text-indigo-400 font-bold text-sm">
+                                <div className="w-full h-full flex items-center justify-center bg-[#EEF2FF] text-[#2E58D7] font-bold text-sm">
                                   {ev.title.charAt(0)}
                                 </div>
                               )}
@@ -320,15 +320,15 @@ const AdminEventsPage: React.FC = () => {
                             <div className="min-w-0 max-w-xs">
                               <Link
                                 to={`/events/${ev.id}`}
-                                className="font-semibold text-white hover:text-indigo-400 transition-colors line-clamp-1 text-sm"
+                                className="font-bold text-[#0B1E4A] hover:text-[#2E58D7] transition-colors line-clamp-1 text-sm"
                               >
                                 {ev.title}
                               </Link>
-                              <p className="text-xs text-slate-400 line-clamp-1 mt-0.5">
+                              <p className="text-xs text-[#5B6487] line-clamp-1 mt-0.5">
                                 {ev.description}
                               </p>
                               {ev.rejectionReason && ev.status === 'REJECTED' && (
-                                <p className="text-[11px] text-rose-400 mt-1 italic">
+                                <p className="text-[11px] text-[#9A2A2A] mt-1 italic font-medium">
                                   Note: {ev.rejectionReason}
                                 </p>
                               )}
@@ -340,7 +340,7 @@ const AdminEventsPage: React.FC = () => {
                         <td className="py-4 px-4 whitespace-nowrap">
                           <div className="flex flex-col gap-1 items-start">
                             <span
-                              className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${getCategoryColor(
+                              className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${getCategoryColor(
                                 ev.category
                               )}`}
                             >
@@ -359,17 +359,17 @@ const AdminEventsPage: React.FC = () => {
                         {/* Organizer */}
                         <td className="py-4 px-4 whitespace-nowrap">
                           <div>
-                            <p className="font-medium text-slate-200 text-xs">
+                            <p className="font-semibold text-[#0B1E4A] text-xs">
                               {ev.organizer?.name || 'Unknown Host'}
                             </p>
-                            <p className="text-[11px] text-slate-500">{ev.organizer?.email}</p>
+                            <p className="text-[11px] text-[#5B6487]">{ev.organizer?.email}</p>
                           </div>
                         </td>
 
                         {/* Schedule */}
-                        <td className="py-4 px-4 whitespace-nowrap text-xs text-slate-300">
-                          <div>{formatDate(ev.startDate)}</div>
-                          <div className="text-[11px] text-slate-500">
+                        <td className="py-4 px-4 whitespace-nowrap text-xs text-[#0B1E4A]">
+                          <div className="font-medium">{formatDate(ev.startDate)}</div>
+                          <div className="text-[11px] text-[#5B6487]">
                             {formatTime(ev.startTime)} - {formatTime(ev.endTime)}
                           </div>
                         </td>
@@ -385,7 +385,7 @@ const AdminEventsPage: React.FC = () => {
                             {/* View detail button */}
                             <Link
                               to={`/events/${ev.id}`}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                              className="p-1.5 rounded-lg text-[#5B6487] hover:text-[#0B1E4A] hover:bg-[#EFF1F9] transition-colors"
                               title="View Event Details"
                             >
                               <ExternalLink className="w-4 h-4" />
@@ -396,7 +396,7 @@ const AdminEventsPage: React.FC = () => {
                               <button
                                 onClick={() => handleApprove(ev.id)}
                                 disabled={isActing}
-                                className="p-1.5 rounded-lg text-emerald-400 hover:bg-emerald-500/10 border border-emerald-500/20 hover:border-emerald-500/40 transition-colors"
+                                className="p-1.5 rounded-lg text-[#047857] hover:bg-[#ECFDF5] border border-[#A7F3D0] transition-colors"
                                 title="Approve Event"
                               >
                                 {isActing ? (
@@ -412,7 +412,7 @@ const AdminEventsPage: React.FC = () => {
                               <button
                                 onClick={() => handleOpenReject(ev)}
                                 disabled={isActing}
-                                className="p-1.5 rounded-lg text-amber-400 hover:bg-amber-500/10 border border-amber-500/20 hover:border-amber-500/40 transition-colors"
+                                className="p-1.5 rounded-lg text-[#B45309] hover:bg-[#FEF3C7] border border-[#FDE68A] transition-colors"
                                 title="Reject Event"
                               >
                                 <XCircle className="w-4 h-4" />
@@ -423,7 +423,7 @@ const AdminEventsPage: React.FC = () => {
                             <button
                               onClick={() => handleDelete(ev.id, ev.title)}
                               disabled={isActing}
-                              className="p-1.5 rounded-lg text-rose-400 hover:bg-rose-500/10 border border-rose-500/20 hover:border-rose-500/40 transition-colors"
+                              className="p-1.5 rounded-lg text-[#9A2A2A] hover:bg-[#FFE2EB] border border-[#FECDD3] transition-colors"
                               title="Delete Event"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -442,25 +442,25 @@ const AdminEventsPage: React.FC = () => {
 
       {/* Rejection Modal */}
       {rejectingEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-          <div className="bg-[#1a1a2e] border border-white/10 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#091838]/60 backdrop-blur-sm">
+          <div className="bg-[#FFFFFF] border border-[#DDE2F0] rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-rose-500/15 text-rose-400">
+              <div className="p-2.5 rounded-xl bg-[#FFE2EB] text-[#9A2A2A]">
                 <AlertCircle className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">Reject Event Submission</h3>
-                <p className="text-xs text-slate-400">Provide feedback so the organizer can revise.</p>
+                <h3 className="text-lg font-bold text-[#0B1E4A]">Reject Event Submission</h3>
+                <p className="text-xs text-[#5B6487]">Provide feedback so the organizer can revise.</p>
               </div>
             </div>
 
-            <div className="bg-white/5 p-3 rounded-xl border border-white/10 text-xs">
-              <span className="text-slate-400">Event: </span>
-              <span className="text-white font-medium">{rejectingEvent.title}</span>
+            <div className="bg-[#EFF1F9] p-3 rounded-xl border border-[#DDE2F0] text-xs">
+              <span className="text-[#5B6487]">Event: </span>
+              <span className="text-[#0B1E4A] font-bold">{rejectingEvent.title}</span>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+              <label className="block text-xs font-bold text-[#0B1E4A] mb-1.5">
                 Rejection Reason / Required Changes
               </label>
               <textarea
@@ -468,7 +468,7 @@ const AdminEventsPage: React.FC = () => {
                 value={rejectionReason}
                 onChange={(e) => setRejectionReason(e.target.value)}
                 placeholder="e.g. Please clarify the venue room number and upload a clearer banner image..."
-                className="w-full px-3.5 py-2.5 bg-[#0f0f1a] border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500"
+                className="w-full px-3.5 py-2.5 bg-[#FFFFFF] border border-[#DDE2F0] rounded-xl text-xs text-[#0B1E4A] placeholder-[#9199B5] focus:outline-none focus:border-[#2E58D7]"
               />
             </div>
 
@@ -476,7 +476,7 @@ const AdminEventsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setRejectingEvent(null)}
-                className="btn bg-white/5 hover:bg-white/10 text-slate-300 text-xs px-4 py-2"
+                className="btn btn-secondary text-xs px-4 py-2"
               >
                 Cancel
               </button>
@@ -484,7 +484,8 @@ const AdminEventsPage: React.FC = () => {
                 type="button"
                 onClick={handleConfirmReject}
                 disabled={Boolean(actionLoadingId)}
-                className="btn bg-rose-600 hover:bg-rose-500 text-white text-xs px-4 py-2"
+                className="btn text-white text-xs px-4 py-2"
+                style={{ backgroundColor: '#9A2A2A', borderRadius: 999 }}
               >
                 {actionLoadingId ? (
                   <Loader2 className="w-4 h-4 animate-spin" />

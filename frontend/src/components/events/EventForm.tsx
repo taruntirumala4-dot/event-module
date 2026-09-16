@@ -120,18 +120,19 @@ const EventForm: React.FC<Props> = ({
 
   const inputStyle: React.CSSProperties = {};
   const sectionStyle: React.CSSProperties = {
-    background: 'rgba(255,255,255,0.04)',
-    border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: '1rem',
-    padding: '1.5rem',
+    background: '#FFFFFF',
+    border: '1px solid #DDE2F0',
+    borderRadius: 14,
+    padding: '1.75rem',
     marginBottom: '1.5rem',
+    boxShadow: '0 4px 18px rgba(11, 30, 74, 0.04)',
   };
 
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: 800 }}>
       {/* Basic Info */}
       <div style={sectionStyle}>
-        <h3 style={{ color: '#f1f5f9', margin: '0 0 1.25rem', fontSize: '1rem', fontWeight: 700 }}>
+        <h3 style={{ color: '#0B1E4A', margin: '0 0 1.25rem', fontSize: '1.0625rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
           Basic Information
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -145,7 +146,7 @@ const EventForm: React.FC<Props> = ({
               placeholder="e.g. AI & Machine Learning Workshop"
               id="event-title"
             />
-            {errors.title && <p style={{ color: '#f87171', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>{errors.title}</p>}
+            {errors.title && <p style={{ color: '#9A2A2A', fontSize: '0.75rem', margin: '0.25rem 0 0', fontWeight: 600 }}>{errors.title}</p>}
           </FormField>
 
           <FormField label="Description" required>
@@ -158,7 +159,7 @@ const EventForm: React.FC<Props> = ({
               style={{ resize: 'vertical' }}
               id="event-description"
             />
-            {errors.description && <p style={{ color: '#f87171', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>{errors.description}</p>}
+            {errors.description && <p style={{ color: '#9A2A2A', fontSize: '0.75rem', margin: '0.25rem 0 0', fontWeight: 600 }}>{errors.description}</p>}
           </FormField>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -174,7 +175,7 @@ const EventForm: React.FC<Props> = ({
                   <option key={c} value={c}>{getCategoryLabel(c)}</option>
                 ))}
               </select>
-              {errors.category && <p style={{ color: '#f87171', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>{errors.category}</p>}
+              {errors.category && <p style={{ color: '#9A2A2A', fontSize: '0.75rem', margin: '0.25rem 0 0', fontWeight: 600 }}>{errors.category}</p>}
             </FormField>
 
             <FormField label="Mode" required>
@@ -189,13 +190,13 @@ const EventForm: React.FC<Props> = ({
                   <option key={m} value={m}>{getModeLabel(m)}</option>
                 ))}
               </select>
-              {errors.mode && <p style={{ color: '#f87171', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>{errors.mode}</p>}
+              {errors.mode && <p style={{ color: '#9A2A2A', fontSize: '0.75rem', margin: '0.25rem 0 0', fontWeight: 600 }}>{errors.mode}</p>}
             </FormField>
           </div>
 
           <FormField label="Event Image URL" hint="Paste a publicly accessible image URL">
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-              <ImageIcon size={16} style={{ color: '#64748b', marginTop: '0.65rem', flexShrink: 0 }} />
+              <ImageIcon size={16} style={{ color: '#2E58D7', marginTop: '0.65rem', flexShrink: 0 }} />
               <div style={{ flex: 1 }}>
                 <input
                   type="url"
@@ -205,14 +206,14 @@ const EventForm: React.FC<Props> = ({
                   placeholder="https://example.com/image.jpg"
                   id="event-image"
                 />
-                {errors.image && <p style={{ color: '#f87171', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>{errors.image}</p>}
+                {errors.image && <p style={{ color: '#9A2A2A', fontSize: '0.75rem', margin: '0.25rem 0 0', fontWeight: 600 }}>{errors.image}</p>}
               </div>
             </div>
             {form.image && /^https?:\/\//.test(form.image) && (
               <img
                 src={form.image}
                 alt="Preview"
-                style={{ marginTop: '0.75rem', width: '100%', height: 120, objectFit: 'cover', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.08)' }}
+                style={{ marginTop: '0.75rem', width: '100%', height: 140, objectFit: 'cover', borderRadius: '10px', border: '1px solid #DDE2F0' }}
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
             )}
@@ -222,7 +223,7 @@ const EventForm: React.FC<Props> = ({
 
       {/* Location & Date */}
       <div style={sectionStyle}>
-        <h3 style={{ color: '#f1f5f9', margin: '0 0 1.25rem', fontSize: '1rem', fontWeight: 700 }}>
+        <h3 style={{ color: '#0B1E4A', margin: '0 0 1.25rem', fontSize: '1.0625rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
           Location & Schedule
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -236,7 +237,7 @@ const EventForm: React.FC<Props> = ({
                 placeholder="e.g. Mumbai, Maharashtra"
                 id="event-location"
               />
-              {errors.location && <p style={{ color: '#f87171', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>{errors.location}</p>}
+              {errors.location && <p style={{ color: '#9A2A2A', fontSize: '0.75rem', margin: '0.25rem 0 0', fontWeight: 600 }}>{errors.location}</p>}
             </FormField>
             <FormField label="Venue">
               <input
@@ -257,10 +258,9 @@ const EventForm: React.FC<Props> = ({
                 value={form.startDate}
                 onChange={(e) => set('startDate', e.target.value)}
                 className="input"
-                style={{ colorScheme: 'dark' }}
                 id="event-start-date"
               />
-              {errors.startDate && <p style={{ color: '#f87171', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>{errors.startDate}</p>}
+              {errors.startDate && <p style={{ color: '#9A2A2A', fontSize: '0.75rem', margin: '0.25rem 0 0', fontWeight: 600 }}>{errors.startDate}</p>}
             </FormField>
             <FormField label="End Date" required>
               <input
@@ -268,10 +268,9 @@ const EventForm: React.FC<Props> = ({
                 value={form.endDate}
                 onChange={(e) => set('endDate', e.target.value)}
                 className="input"
-                style={{ colorScheme: 'dark' }}
                 id="event-end-date"
               />
-              {errors.endDate && <p style={{ color: '#f87171', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>{errors.endDate}</p>}
+              {errors.endDate && <p style={{ color: '#9A2A2A', fontSize: '0.75rem', margin: '0.25rem 0 0', fontWeight: 600 }}>{errors.endDate}</p>}
             </FormField>
           </div>
 
@@ -282,7 +281,6 @@ const EventForm: React.FC<Props> = ({
                 value={form.startTime}
                 onChange={(e) => set('startTime', e.target.value)}
                 className="input"
-                style={{ colorScheme: 'dark' }}
                 id="event-start-time"
               />
             </FormField>
@@ -292,7 +290,6 @@ const EventForm: React.FC<Props> = ({
                 value={form.endTime}
                 onChange={(e) => set('endTime', e.target.value)}
                 className="input"
-                style={{ colorScheme: 'dark' }}
                 id="event-end-time"
               />
             </FormField>
@@ -302,7 +299,7 @@ const EventForm: React.FC<Props> = ({
 
       {/* Registration */}
       <div style={sectionStyle}>
-        <h3 style={{ color: '#f1f5f9', margin: '0 0 1.25rem', fontSize: '1rem', fontWeight: 700 }}>
+        <h3 style={{ color: '#0B1E4A', margin: '0 0 1.25rem', fontSize: '1.0625rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
           Registration Details
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -313,10 +310,9 @@ const EventForm: React.FC<Props> = ({
                 value={form.registrationDeadline}
                 onChange={(e) => set('registrationDeadline', e.target.value)}
                 className="input"
-                style={{ colorScheme: 'dark' }}
                 id="event-deadline"
               />
-              {errors.registrationDeadline && <p style={{ color: '#f87171', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>{errors.registrationDeadline}</p>}
+              {errors.registrationDeadline && <p style={{ color: '#9A2A2A', fontSize: '0.75rem', margin: '0.25rem 0 0', fontWeight: 600 }}>{errors.registrationDeadline}</p>}
             </FormField>
             <FormField label="Maximum Capacity" required>
               <input
@@ -328,7 +324,7 @@ const EventForm: React.FC<Props> = ({
                 placeholder="e.g. 100"
                 id="event-capacity"
               />
-              {errors.capacity && <p style={{ color: '#f87171', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>{errors.capacity}</p>}
+              {errors.capacity && <p style={{ color: '#9A2A2A', fontSize: '0.75rem', margin: '0.25rem 0 0', fontWeight: 600 }}>{errors.capacity}</p>}
             </FormField>
           </div>
 
@@ -352,7 +348,7 @@ const EventForm: React.FC<Props> = ({
               placeholder="https://forms.google.com/..."
               id="event-reg-link"
             />
-            {errors.registrationLink && <p style={{ color: '#f87171', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>{errors.registrationLink}</p>}
+            {errors.registrationLink && <p style={{ color: '#9A2A2A', fontSize: '0.75rem', margin: '0.25rem 0 0', fontWeight: 600 }}>{errors.registrationLink}</p>}
           </FormField>
         </div>
       </div>
@@ -362,16 +358,17 @@ const EventForm: React.FC<Props> = ({
         style={{
           display: 'flex',
           gap: '0.625rem',
-          background: 'rgba(79, 70, 229, 0.08)',
-          border: '1px solid rgba(79, 70, 229, 0.2)',
-          borderRadius: '0.75rem',
+          background: '#EFF1F9',
+          border: '1px solid #DDE2F0',
+          borderRadius: 14,
           padding: '0.875rem 1rem',
-          color: '#94a3b8',
+          color: '#5B6487',
           fontSize: '0.8125rem',
           marginBottom: '1.5rem',
+          fontWeight: 500,
         }}
       >
-        <Info size={16} style={{ color: '#818cf8', flexShrink: 0, marginTop: 1 }} />
+        <Info size={16} style={{ color: '#2E58D7', flexShrink: 0, marginTop: 1 }} />
         Your event will be submitted for admin review. Once approved, it will be visible to students.
       </div>
 

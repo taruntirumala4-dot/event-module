@@ -20,10 +20,10 @@ const EventFilter: React.FC<Props> = ({ filters, onChange, onClear }) => {
   const hasFilters = filters.category || filters.mode || filters.location || filters.date;
 
   const selectStyle: React.CSSProperties = {
-    background: '#ffffff',
-    border: '1.5px solid #e2e8f0',
-    borderRadius: '8px',
-    color: '#1e293b',
+    background: '#FFFFFF',
+    border: '1px solid #DDE2F0',
+    borderRadius: '10px',
+    color: '#0B1E4A',
     padding: '0.5rem 0.75rem',
     fontSize: '0.8125rem',
     outline: 'none',
@@ -34,22 +34,23 @@ const EventFilter: React.FC<Props> = ({ filters, onChange, onClear }) => {
   return (
     <div
       style={{
-        background: '#f8fafc',
-        border: '1px solid #e2e8f0',
-        borderRadius: '12px',
-        padding: '1rem',
+        background: '#FFFFFF',
+        border: '1px solid #DDE2F0',
+        borderRadius: 14,
+        padding: '1.25rem',
+        boxShadow: '0 4px 18px rgba(11, 30, 74, 0.04)',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.875rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#475569', fontSize: '0.875rem', fontWeight: 600 }}>
-          <Filter size={15} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#0B1E4A', fontSize: '0.875rem', fontWeight: 700 }}>
+          <Filter size={15} style={{ color: '#2E58D7' }} />
           Filters
         </div>
         {hasFilters && (
           <button
             onClick={onClear}
             className="btn btn-secondary"
-            style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem', borderRadius: '0.5rem' }}
+            style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem', borderRadius: '999px' }}
           >
             <X size={12} /> Clear
           </button>

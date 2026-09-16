@@ -48,13 +48,13 @@ const Navbar: React.FC = () => {
         position: 'sticky',
         top: 0,
         zIndex: 50,
-        background: '#ffffff',
-        borderBottom: '1px solid #e2e8f0',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+        background: '#FFFFFF',
+        borderBottom: '1px solid #DDE2F0',
+        boxShadow: '0 4px 18px rgba(11, 30, 74, 0.04)',
       }}
     >
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 1.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', height: 60, gap: '1.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', height: 64, gap: '1.5rem' }}>
 
           {/* Brand Logo */}
           <Link
@@ -71,30 +71,30 @@ const Navbar: React.FC = () => {
               style={{
                 width: 30,
                 height: 30,
-                background: 'linear-gradient(135deg, #2563eb, #7c3aed)',
+                background: 'linear-gradient(135deg, #2E58D7, #00CBE8)',
                 clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
                 flexShrink: 0,
               }}
             />
-            <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1e293b', letterSpacing: '-0.02em' }}>
-              Event<span style={{ color: '#2563eb' }}>Sphere</span>
+            <span style={{ fontSize: '1.125rem', fontWeight: 800, color: '#0B1E4A', letterSpacing: '-0.035em' }}>
+              Intern<span style={{ color: '#2E58D7' }}>Atlas</span>
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flex: 1 }} className="hidden-mobile">
+          <nav style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', flex: 1 }} className="hidden-mobile">
             <Link
               to="/events"
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.25rem',
-                padding: '0.375rem 0.75rem',
-                borderRadius: '6px',
+                padding: '0.4rem 0.85rem',
+                borderRadius: '999px',
                 fontSize: '0.875rem',
-                fontWeight: 500,
-                color: isActive('/events') ? '#2563eb' : '#475569',
-                background: isActive('/events') ? '#eff6ff' : 'transparent',
+                fontWeight: 600,
+                color: isActive('/events') ? '#2E58D7' : '#0B1E4A',
+                background: isActive('/events') ? '#EFF1F9' : 'transparent',
                 textDecoration: 'none',
                 transition: 'all 0.15s',
               }}
@@ -105,16 +105,22 @@ const Navbar: React.FC = () => {
             <Link
               to="/events/create"
               style={{
-                padding: '0.375rem 0.75rem',
-                borderRadius: '6px',
+                padding: '0.4rem 0.85rem',
+                borderRadius: '999px',
                 fontSize: '0.875rem',
-                fontWeight: 500,
-                color: '#475569',
+                fontWeight: 600,
+                color: '#0B1E4A',
                 textDecoration: 'none',
                 transition: 'all 0.15s',
               }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#1e293b')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#475569')}
+              onMouseEnter={e => {
+                e.currentTarget.style.color = '#2E58D7';
+                e.currentTarget.style.background = '#EFF1F9';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.color = '#0B1E4A';
+                e.currentTarget.style.background = 'transparent';
+              }}
             >
               For Employers
             </Link>
@@ -122,16 +128,22 @@ const Navbar: React.FC = () => {
             <Link
               to="/events"
               style={{
-                padding: '0.375rem 0.75rem',
-                borderRadius: '6px',
+                padding: '0.4rem 0.85rem',
+                borderRadius: '999px',
                 fontSize: '0.875rem',
-                fontWeight: 500,
-                color: '#475569',
+                fontWeight: 600,
+                color: '#0B1E4A',
                 textDecoration: 'none',
                 transition: 'all 0.15s',
               }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#1e293b')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#475569')}
+              onMouseEnter={e => {
+                e.currentTarget.style.color = '#2E58D7';
+                e.currentTarget.style.background = '#EFF1F9';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.color = '#0B1E4A';
+                e.currentTarget.style.background = 'transparent';
+              }}
             >
               For Colleges
             </Link>
@@ -141,13 +153,21 @@ const Navbar: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.25rem',
-                padding: '0.375rem 0.75rem',
-                borderRadius: '6px',
+                padding: '0.4rem 0.85rem',
+                borderRadius: '999px',
                 fontSize: '0.875rem',
-                fontWeight: 500,
-                color: '#475569',
+                fontWeight: 600,
+                color: '#0B1E4A',
                 cursor: 'pointer',
                 transition: 'all 0.15s',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.color = '#2E58D7';
+                e.currentTarget.style.background = '#EFF1F9';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.color = '#0B1E4A';
+                e.currentTarget.style.background = 'transparent';
               }}
             >
               Resources <ChevronDown size={14} />
@@ -161,12 +181,12 @@ const Navbar: React.FC = () => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.25rem',
-                    padding: '0.375rem 0.75rem',
-                    borderRadius: '6px',
+                    padding: '0.4rem 0.85rem',
+                    borderRadius: '999px',
                     fontSize: '0.875rem',
-                    fontWeight: 500,
-                    color: isActive('/my-events') ? '#2563eb' : '#475569',
-                    background: isActive('/my-events') ? '#eff6ff' : 'transparent',
+                    fontWeight: 600,
+                    color: isActive('/my-events') ? '#2E58D7' : '#0B1E4A',
+                    background: isActive('/my-events') ? '#EFF1F9' : 'transparent',
                     textDecoration: 'none',
                   }}
                 >
@@ -178,12 +198,12 @@ const Navbar: React.FC = () => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.25rem',
-                    padding: '0.375rem 0.75rem',
-                    borderRadius: '6px',
+                    padding: '0.4rem 0.85rem',
+                    borderRadius: '999px',
                     fontSize: '0.875rem',
-                    fontWeight: 500,
-                    color: isActive('/saved-events') ? '#2563eb' : '#475569',
-                    background: isActive('/saved-events') ? '#eff6ff' : 'transparent',
+                    fontWeight: 600,
+                    color: isActive('/saved-events') ? '#2E58D7' : '#0B1E4A',
+                    background: isActive('/saved-events') ? '#EFF1F9' : 'transparent',
                     textDecoration: 'none',
                   }}
                 >
@@ -199,12 +219,12 @@ const Navbar: React.FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.25rem',
-                  padding: '0.375rem 0.75rem',
-                  borderRadius: '6px',
+                  padding: '0.4rem 0.85rem',
+                  borderRadius: '999px',
                   fontSize: '0.875rem',
-                  fontWeight: 500,
-                  color: isActive('/events/create') ? '#16a34a' : '#475569',
-                  background: isActive('/events/create') ? '#f0fdf4' : 'transparent',
+                  fontWeight: 600,
+                  color: isActive('/events/create') ? '#2E58D7' : '#0B1E4A',
+                  background: isActive('/events/create') ? '#EFF1F9' : 'transparent',
                   textDecoration: 'none',
                 }}
               >
@@ -219,12 +239,12 @@ const Navbar: React.FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.25rem',
-                  padding: '0.375rem 0.75rem',
-                  borderRadius: '6px',
+                  padding: '0.4rem 0.85rem',
+                  borderRadius: '999px',
                   fontSize: '0.875rem',
-                  fontWeight: 500,
-                  color: isActive('/admin/events') ? '#dc2626' : '#475569',
-                  background: isActive('/admin/events') ? '#fef2f2' : 'transparent',
+                  fontWeight: 600,
+                  color: isActive('/admin/events') ? '#9A2A2A' : '#0B1E4A',
+                  background: isActive('/admin/events') ? '#FFE2EB' : 'transparent',
                   textDecoration: 'none',
                 }}
               >
@@ -239,7 +259,7 @@ const Navbar: React.FC = () => {
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }} className="hidden-mobile">
               <Search
                 size={15}
-                style={{ position: 'absolute', left: '0.75rem', color: '#94a3b8', pointerEvents: 'none' }}
+                style={{ position: 'absolute', left: '0.875rem', color: '#7C849E', pointerEvents: 'none' }}
               />
               <input
                 type="text"
@@ -247,38 +267,39 @@ const Navbar: React.FC = () => {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 style={{
-                  paddingLeft: '2.25rem',
+                  paddingLeft: '2.35rem',
                   paddingRight: '1rem',
-                  paddingTop: '0.4rem',
-                  paddingBottom: '0.4rem',
-                  border: '1.5px solid #e2e8f0',
-                  borderRadius: '8px',
+                  paddingTop: '0.45rem',
+                  paddingBottom: '0.45rem',
+                  border: '1px solid #DDE2F0',
+                  borderRadius: '999px',
                   fontSize: '0.8125rem',
-                  color: '#1e293b',
-                  background: '#f8fafc',
+                  color: '#0B1E4A',
+                  background: '#FFFFFF',
                   width: 220,
                   outline: 'none',
                   fontFamily: 'inherit',
                   transition: 'border-color 0.2s, box-shadow 0.2s',
                 }}
                 onFocus={e => {
-                  e.currentTarget.style.borderColor = '#2563eb';
-                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.1)';
+                  e.currentTarget.style.borderColor = '#2E58D7';
+                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(46,88,215,0.12)';
                 }}
                 onBlur={e => {
-                  e.currentTarget.style.borderColor = '#e2e8f0';
+                  e.currentTarget.style.borderColor = '#DDE2F0';
                   e.currentTarget.style.boxShadow = 'none';
                 }}
               />
               <span style={{
                 position: 'absolute',
-                right: '0.625rem',
+                right: '0.75rem',
                 fontSize: '0.65rem',
-                color: '#94a3b8',
-                background: '#e2e8f0',
-                padding: '1px 5px',
+                color: '#7C849E',
+                background: '#EFF1F9',
+                padding: '1px 6px',
                 borderRadius: '4px',
                 fontFamily: 'monospace',
+                border: '1px solid #DDE2F0',
               }}>⌘K</span>
             </div>
 
@@ -289,23 +310,25 @@ const Navbar: React.FC = () => {
                   position: 'relative',
                   width: 36,
                   height: 36,
-                  border: '1.5px solid #e2e8f0',
-                  borderRadius: '8px',
-                  background: '#ffffff',
+                  border: '1px solid #DDE2F0',
+                  borderRadius: '999px',
+                  background: '#FFFFFF',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  color: '#64748b',
+                  color: '#0B1E4A',
                   transition: 'all 0.15s',
                 }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#2563eb';
-                  (e.currentTarget as HTMLButtonElement).style.color = '#2563eb';
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#2E58D7';
+                  (e.currentTarget as HTMLButtonElement).style.color = '#2E58D7';
+                  (e.currentTarget as HTMLButtonElement).style.background = '#EFF1F9';
                 }}
                 onMouseLeave={e => {
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#e2e8f0';
-                  (e.currentTarget as HTMLButtonElement).style.color = '#64748b';
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#DDE2F0';
+                  (e.currentTarget as HTMLButtonElement).style.color = '#0B1E4A';
+                  (e.currentTarget as HTMLButtonElement).style.background = '#FFFFFF';
                 }}
               >
                 <Bell size={16} />
@@ -318,33 +341,34 @@ const Navbar: React.FC = () => {
                 {/* Avatar circle */}
                 <div
                   style={{
-                    width: 34,
-                    height: 34,
+                    width: 36,
+                    height: 36,
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #2563eb, #7c3aed)',
+                    background: 'linear-gradient(135deg, #2E58D7, #00CBE8)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: 'white',
-                    fontSize: '0.8125rem',
+                    color: '#FFFFFF',
+                    fontSize: '0.875rem',
                     fontWeight: 700,
                     cursor: 'pointer',
                     flexShrink: 0,
+                    boxShadow: '0 2px 8px rgba(46,88,215,0.2)',
                   }}
                   title={user.name}
                 >
                   {user.name.charAt(0).toUpperCase()}
                 </div>
                 <div className="hidden-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#1e293b', lineHeight: 1.2 }}>
+                  <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#0B1E4A', lineHeight: 1.2 }}>
                     {user.name.split(' ')[0]}
                   </span>
                   <span
                     style={{
                       fontSize: '0.65rem',
                       fontWeight: 700,
-                      padding: '0px 5px',
-                      borderRadius: '4px',
+                      padding: '1px 6px',
+                      borderRadius: '999px',
                       ...getRoleBadgeStyle(user.role),
                     }}
                   >
@@ -357,58 +381,73 @@ const Navbar: React.FC = () => {
                   style={{
                     width: 32,
                     height: 32,
-                    border: '1px solid #fee2e2',
-                    borderRadius: '7px',
-                    background: '#fff5f5',
+                    border: '1px solid #DDE2F0',
+                    borderRadius: '999px',
+                    background: '#FFFFFF',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: 'pointer',
-                    color: '#dc2626',
+                    color: '#9A2A2A',
                     transition: 'all 0.15s',
                   }}
+                  onMouseEnter={e => (e.currentTarget.style.background = '#FFE2EB')}
+                  onMouseLeave={e => (e.currentTarget.style.background = '#FFFFFF')}
                 >
                   <LogOut size={14} />
                 </button>
               </div>
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                {/* Secondary Button: Login */}
                 <Link
                   to="/login"
                   style={{
-                    padding: '0.4rem 0.875rem',
-                    borderRadius: '7px',
+                    padding: '0.5rem 1.125rem',
+                    borderRadius: '999px',
                     fontSize: '0.8125rem',
                     fontWeight: 600,
-                    color: '#475569',
-                    border: '1.5px solid #e2e8f0',
-                    background: '#ffffff',
+                    color: '#0B1E4A',
+                    border: '1px solid #DDE2F0',
+                    background: '#FFFFFF',
                     textDecoration: 'none',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.3rem',
+                    gap: '0.35rem',
                     transition: 'all 0.15s',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = '#EFF1F9';
+                    e.currentTarget.style.borderColor = '#2E58D7';
+                    e.currentTarget.style.color = '#2E58D7';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = '#FFFFFF';
+                    e.currentTarget.style.borderColor = '#DDE2F0';
+                    e.currentTarget.style.color = '#0B1E4A';
                   }}
                 >
                   <LogIn size={13} /> Login
                 </Link>
+                {/* Primary Button: Sign Up */}
                 <Link
                   to="/register"
                   style={{
-                    padding: '0.4rem 0.875rem',
-                    borderRadius: '7px',
+                    padding: '0.5rem 1.25rem',
+                    borderRadius: '999px',
                     fontSize: '0.8125rem',
-                    fontWeight: 600,
-                    color: '#ffffff',
-                    background: '#1e293b',
+                    fontWeight: 700,
+                    color: '#FFFFFF',
+                    background: '#2E58D7',
                     textDecoration: 'none',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.3rem',
+                    gap: '0.35rem',
                     transition: 'all 0.15s',
+                    boxShadow: '0 4px 14px rgba(46, 88, 215, 0.25)',
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.background = '#0f172a')}
-                  onMouseLeave={e => (e.currentTarget.style.background = '#1e293b')}
+                  onMouseEnter={e => (e.currentTarget.style.background = '#1C3FA8')}
+                  onMouseLeave={e => (e.currentTarget.style.background = '#2E58D7')}
                 >
                   <UserPlus size={13} /> Sign Up
                 </Link>
@@ -422,13 +461,13 @@ const Navbar: React.FC = () => {
                 display: 'none',
                 width: 36,
                 height: 36,
-                border: '1.5px solid #e2e8f0',
-                borderRadius: '8px',
-                background: '#ffffff',
+                border: '1px solid #DDE2F0',
+                borderRadius: '999px',
+                background: '#FFFFFF',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                color: '#475569',
+                color: '#0B1E4A',
               }}
               className="show-mobile"
               aria-label="Toggle Menu"
@@ -442,12 +481,13 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div style={{
-          background: '#ffffff',
-          borderTop: '1px solid #e2e8f0',
+          background: '#FFFFFF',
+          borderTop: '1px solid #DDE2F0',
           padding: '1rem 1.5rem',
           display: 'flex',
           flexDirection: 'column',
           gap: '0.375rem',
+          boxShadow: '0 8px 24px rgba(11, 30, 74, 0.08)',
         }}>
           {[
             { to: '/events', label: 'Discover Events', icon: <Calendar size={16} /> },
@@ -471,23 +511,23 @@ const Navbar: React.FC = () => {
                 alignItems: 'center',
                 gap: '0.625rem',
                 padding: '0.625rem 0.75rem',
-                borderRadius: '8px',
+                borderRadius: '10px',
                 fontSize: '0.875rem',
-                fontWeight: 500,
-                color: '#475569',
+                fontWeight: 600,
+                color: isActive(to) ? '#2E58D7' : '#0B1E4A',
                 textDecoration: 'none',
-                background: isActive(to) ? '#eff6ff' : 'transparent',
+                background: isActive(to) ? '#EFF1F9' : 'transparent',
               }}
             >
               {icon} {label}
             </Link>
           ))}
-          <div style={{ borderTop: '1px solid #e2e8f0', marginTop: '0.5rem', paddingTop: '0.75rem' }}>
+          <div style={{ borderTop: '1px solid #DDE2F0', marginTop: '0.5rem', paddingTop: '0.75rem' }}>
             {user ? (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
-                  <p style={{ margin: 0, fontWeight: 600, fontSize: '0.875rem', color: '#1e293b' }}>{user.name}</p>
-                  <p style={{ margin: 0, fontSize: '0.75rem', color: '#64748b' }}>{user.email}</p>
+                  <p style={{ margin: 0, fontWeight: 700, fontSize: '0.875rem', color: '#0B1E4A' }}>{user.name}</p>
+                  <p style={{ margin: 0, fontSize: '0.75rem', color: '#5B6487' }}>{user.email}</p>
                 </div>
                 <button
                   onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
@@ -496,12 +536,12 @@ const Navbar: React.FC = () => {
                     alignItems: 'center',
                     gap: '0.375rem',
                     padding: '0.5rem 0.875rem',
-                    borderRadius: '7px',
+                    borderRadius: '999px',
                     fontSize: '0.8125rem',
                     fontWeight: 600,
-                    color: '#dc2626',
-                    border: '1px solid #fee2e2',
-                    background: '#fff5f5',
+                    color: '#9A2A2A',
+                    border: '1px solid #DDE2F0',
+                    background: '#FFE2EB',
                     cursor: 'pointer',
                   }}
                 >
@@ -519,12 +559,12 @@ const Navbar: React.FC = () => {
                     justifyContent: 'center',
                     gap: '0.375rem',
                     padding: '0.5rem',
-                    borderRadius: '7px',
+                    borderRadius: '999px',
                     fontSize: '0.8125rem',
                     fontWeight: 600,
-                    color: '#475569',
-                    border: '1.5px solid #e2e8f0',
-                    background: '#ffffff',
+                    color: '#0B1E4A',
+                    border: '1px solid #DDE2F0',
+                    background: '#FFFFFF',
                     textDecoration: 'none',
                   }}
                 >
@@ -539,11 +579,11 @@ const Navbar: React.FC = () => {
                     justifyContent: 'center',
                     gap: '0.375rem',
                     padding: '0.5rem',
-                    borderRadius: '7px',
+                    borderRadius: '999px',
                     fontSize: '0.8125rem',
                     fontWeight: 600,
-                    color: '#ffffff',
-                    background: '#1e293b',
+                    color: '#FFFFFF',
+                    background: '#2E58D7',
                     textDecoration: 'none',
                   }}
                 >

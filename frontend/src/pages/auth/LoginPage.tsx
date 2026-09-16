@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
       display: 'flex',
       background: 'linear-gradient(135deg, #f0f4ff 0%, #faf5ff 50%, #fff0f6 100%)',
     }}>
-      {/* Left panel — branding */}
+      {/* Left panel — branding (Section 10 Dark Sections) */}
       <div style={{
         flex: 1,
         display: 'flex',
@@ -42,8 +42,8 @@ const LoginPage: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '3rem',
-        background: 'linear-gradient(135deg, #1e293b 0%, #1e3a8a 100%)',
-        color: '#ffffff',
+        background: 'linear-gradient(135deg, #091838 0%, #0B1E4A 100%)',
+        color: '#FFFFFF',
       }} className="auth-left-panel">
         <div style={{ maxWidth: 400, textAlign: 'center' }}>
           {/* Logo */}
@@ -51,18 +51,18 @@ const LoginPage: React.FC = () => {
             <div style={{
               width: 32,
               height: 32,
-              background: 'linear-gradient(135deg, #60a5fa, #a78bfa)',
+              background: 'linear-gradient(135deg, #2E58D7, #00CBE8)',
               clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
             }} />
-            <span style={{ fontSize: '1.25rem', fontWeight: 800 }}>
-              Event<span style={{ color: '#60a5fa' }}>Sphere</span>
+            <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.035em' }}>
+              Intern<span style={{ color: '#00CBE8' }}>Atlas</span>
             </span>
           </div>
 
-          <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 800, margin: '0 0 1rem', lineHeight: 1.2 }}>
-            Your next <span style={{ color: '#60a5fa', fontStyle: 'italic' }}>chapter</span> starts here.
+          <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 800, margin: '0 0 1rem', lineHeight: 1.2, letterSpacing: '-0.035em' }}>
+            Your next <span className="editorial-italic" style={{ fontFamily: '"DM Serif Display", Georgia, serif', fontStyle: 'italic', color: '#7AD9E8' }}>chapter</span> starts here.
           </h2>
-          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9375rem', lineHeight: 1.6, margin: '0 0 2rem' }}>
+          <p style={{ color: '#DDE2F0', fontSize: '0.9375rem', lineHeight: 1.6, margin: '0 0 2rem' }}>
             Join thousands of students discovering internships, competitions, and events across India.
           </p>
 
@@ -73,9 +73,9 @@ const LoginPage: React.FC = () => {
               { val: '500+', label: 'Companies' },
               { val: '10K+', label: 'Opportunities' },
             ].map(({ val, label }) => (
-              <div key={label} style={{ background: 'rgba(255,255,255,0.08)', borderRadius: '12px', padding: '1rem 0.5rem', textAlign: 'center' }}>
-                <p style={{ fontSize: '1.25rem', fontWeight: 800, color: '#60a5fa', margin: '0 0 0.25rem' }}>{val}</p>
-                <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', margin: 0 }}>{label}</p>
+              <div key={label} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(221, 226, 240, 0.1)', borderRadius: '14px', padding: '1rem 0.5rem', textAlign: 'center' }}>
+                <p style={{ fontSize: '1.25rem', fontWeight: 800, color: '#7AD9E8', margin: '0 0 0.25rem' }}>{val}</p>
+                <p style={{ fontSize: '0.75rem', color: '#DDE2F0', margin: 0, fontWeight: 500 }}>{label}</p>
               </div>
             ))}
           </div>
@@ -89,7 +89,7 @@ const LoginPage: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '2rem 1.5rem',
-        background: '#ffffff',
+        background: '#FFFFFF',
         minWidth: 0,
       }}>
         <div style={{ width: '100%', maxWidth: 420 }}>
@@ -98,19 +98,19 @@ const LoginPage: React.FC = () => {
             <div style={{
               width: 26,
               height: 26,
-              background: 'linear-gradient(135deg, #2563eb, #7c3aed)',
+              background: 'linear-gradient(135deg, #2E58D7, #00CBE8)',
               clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
             }} />
-            <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1e293b' }}>
-              Event<span style={{ color: '#2563eb' }}>Sphere</span>
+            <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0B1E4A' }}>
+              Intern<span style={{ color: '#2E58D7' }}>Atlas</span>
             </span>
           </div>
 
-          <h1 style={{ fontSize: '1.625rem', fontWeight: 800, color: '#1e293b', margin: '0 0 0.375rem' }}>
+          <h1 style={{ fontSize: '1.625rem', fontWeight: 800, color: '#0B1E4A', margin: '0 0 0.375rem', letterSpacing: '-0.035em' }}>
             Welcome back 👋
           </h1>
-          <p style={{ color: '#64748b', fontSize: '0.9375rem', margin: '0 0 2rem' }}>
-            Sign in to your EventSphere account
+          <p style={{ color: '#5B6487', fontSize: '0.9375rem', margin: '0 0 2rem' }}>
+            Sign in to your InternAtlas account
           </p>
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.125rem' }}>
@@ -152,7 +152,7 @@ const LoginPage: React.FC = () => {
                     transform: 'translateY(-50%)',
                     background: 'none',
                     border: 'none',
-                    color: '#94a3b8',
+                    color: '#7C849E',
                     cursor: 'pointer',
                     padding: 0,
                     display: 'flex',
@@ -169,9 +169,9 @@ const LoginPage: React.FC = () => {
               style={{
                 width: '100%',
                 padding: '0.75rem',
-                borderRadius: '8px',
-                background: '#1e293b',
-                color: '#ffffff',
+                borderRadius: '999px',
+                background: '#2E58D7',
+                color: '#FFFFFF',
                 fontWeight: 700,
                 fontSize: '0.9375rem',
                 border: 'none',
@@ -182,17 +182,20 @@ const LoginPage: React.FC = () => {
                 gap: '0.5rem',
                 transition: 'background 0.15s',
                 opacity: loading ? 0.7 : 1,
+                boxShadow: '0 4px 14px rgba(46, 88, 215, 0.25)',
               }}
               id="login-submit"
+              onMouseEnter={e => (e.currentTarget.style.background = '#1C3FA8')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#2E58D7')}
             >
               {loading ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <LogIn size={16} />}
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          <p style={{ textAlign: 'center', color: '#64748b', fontSize: '0.875rem', marginTop: '1.5rem' }}>
+          <p style={{ textAlign: 'center', color: '#5B6487', fontSize: '0.875rem', marginTop: '1.5rem' }}>
             Don't have an account?{' '}
-            <Link to="/register" style={{ color: '#2563eb', fontWeight: 700, textDecoration: 'none' }}>
+            <Link to="/register" style={{ color: '#2E58D7', fontWeight: 700, textDecoration: 'none' }}>
               Sign up free
             </Link>
           </p>

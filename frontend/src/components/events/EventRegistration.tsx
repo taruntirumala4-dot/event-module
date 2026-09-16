@@ -31,14 +31,14 @@ const EventRegistration: React.FC<Props> = ({ event, onRegistered }) => {
     return (
       <div
         style={{
-          background: '#f8fafc',
-          border: '1px solid #e2e8f0',
-          borderRadius: '10px',
+          background: '#EFF1F9',
+          border: '1px solid #DDE2F0',
+          borderRadius: 10,
           padding: '0.875rem 1rem',
-          color: '#64748b',
+          color: '#5B6487',
           fontSize: '0.875rem',
           textAlign: 'center',
-          fontWeight: 500,
+          fontWeight: 600,
         }}
       >
         Only students can register for events.
@@ -83,16 +83,16 @@ const EventRegistration: React.FC<Props> = ({ event, onRegistered }) => {
             display: 'flex',
             alignItems: 'center',
             gap: '0.625rem',
-            background: '#ecfdf5',
-            border: '1px solid #a7f3d0',
-            borderRadius: '10px',
+            background: '#EFF1F9',
+            border: '1px solid #DDE2F0',
+            borderRadius: 10,
             padding: '0.875rem 1rem',
-            color: '#065f46',
-            fontWeight: 600,
+            color: '#0B1E4A',
+            fontWeight: 700,
             fontSize: '0.875rem',
           }}
         >
-          <CheckCircle size={18} color="#059669" />
+          <CheckCircle size={18} color="#16a34a" />
           You are registered for this event
         </div>
         <button onClick={handleUnregister} disabled={loading} className="btn btn-secondary">

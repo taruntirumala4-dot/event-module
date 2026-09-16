@@ -12,7 +12,7 @@ const MyEventsPage: React.FC = () => {
   if (!user) {
     return (
       <div className="page-container" style={{ textAlign: 'center', padding: '4rem' }}>
-        <p style={{ color: '#64748b' }}>Please <Link to="/login" style={{ color: '#2563eb', fontWeight: 600 }}>login</Link> to view your registered events.</p>
+        <p style={{ color: '#5B6487' }}>Please <Link to="/login" style={{ color: '#2E58D7', fontWeight: 600 }}>login</Link> to view your registered events.</p>
       </div>
     );
   }
@@ -21,30 +21,32 @@ const MyEventsPage: React.FC = () => {
     <div className="page-container">
       <div style={{ marginBottom: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.5rem' }}>
-          <CalendarCheck size={20} color="#2563eb" />
-          <span style={{ color: '#2563eb', fontSize: '0.875rem', fontWeight: 600 }}>My Activity</span>
+          <div style={{ width: 32, height: 32, borderRadius: 8, background: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <CalendarCheck size={18} color="#2E58D7" />
+          </div>
+          <span style={{ color: '#2E58D7', fontSize: '0.875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>My Activity</span>
         </div>
-        <h1 style={{ color: '#0f172a', fontSize: '1.875rem', fontWeight: 800, margin: 0 }}>
+        <h1 style={{ color: '#0B1E4A', fontSize: '1.875rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>
           My Registered Events
         </h1>
-        <p style={{ color: '#64748b', marginTop: '0.375rem', marginBottom: 0 }}>
+        <p style={{ color: '#5B6487', marginTop: '0.375rem', marginBottom: 0 }}>
           Events you have signed up for
         </p>
       </div>
 
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '4rem', color: '#64748b' }}>
-          <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
+        <div style={{ textAlign: 'center', padding: '4rem', color: '#5B6487' }}>
+          <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: '#2E58D7', margin: '0 auto' }} />
         </div>
       ) : error ? (
-        <p style={{ color: '#ef4444' }}>⚠️ {error}</p>
+        <p style={{ color: '#9A2A2A' }}>⚠️ {error}</p>
       ) : registrations.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '4rem', background: '#ffffff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-          <div style={{ width: 72, height: 72, borderRadius: '50%', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
-            <CalendarCheck size={32} color="#2563eb" />
+        <div style={{ textAlign: 'center', padding: '4rem', background: '#FFFFFF', borderRadius: 14, border: '1px solid #DDE2F0', boxShadow: '0 4px 18px rgba(11, 30, 74, 0.04)' }}>
+          <div style={{ width: 72, height: 72, borderRadius: '50%', background: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
+            <CalendarCheck size={32} color="#2E58D7" />
           </div>
-          <h3 style={{ color: '#0f172a', margin: '0 0 0.5rem', fontWeight: 700 }}>No registered events yet</h3>
-          <p style={{ color: '#64748b', margin: '0 0 1.5rem' }}>Browse events and register to see them here.</p>
+          <h3 style={{ color: '#0B1E4A', margin: '0 0 0.5rem', fontWeight: 800 }}>No registered events yet</h3>
+          <p style={{ color: '#5B6487', margin: '0 0 1.5rem' }}>Browse events and register to see them here.</p>
           <Link to="/events" className="btn btn-primary" style={{ display: 'inline-flex' }}>
             Browse Events <ArrowRight size={15} />
           </Link>
@@ -56,41 +58,41 @@ const MyEventsPage: React.FC = () => {
               key={reg.id}
               className="fade-in"
               style={{
-                background: '#ffffff',
-                border: '1px solid #e2e8f0',
-                borderRadius: '12px',
+                background: '#FFFFFF',
+                border: '1px solid #DDE2F0',
+                borderRadius: 14,
                 padding: '1.25rem',
                 display: 'flex',
                 gap: '1.25rem',
                 alignItems: 'center',
                 flexWrap: 'wrap',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                boxShadow: '0 4px 18px rgba(11, 30, 74, 0.04)',
               }}
             >
               {/* Image */}
               <img
                 src={reg.event.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=200&auto=format&fit=crop'}
                 alt={reg.event.title}
-                style={{ width: 84, height: 84, borderRadius: '10px', objectFit: 'cover', flexShrink: 0 }}
+                style={{ width: 84, height: 84, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }}
                 onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=200&auto=format&fit=crop'; }}
               />
               {/* Details */}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ color: getCategoryColor(reg.event.category), fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+                <span style={{ color: '#2E58D7', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   {getCategoryLabel(reg.event.category)}
                 </span>
-                <h3 style={{ color: '#0f172a', fontSize: '1.0625rem', fontWeight: 700, margin: '0.25rem 0 0.5rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <h3 style={{ color: '#0B1E4A', fontSize: '1.0625rem', fontWeight: 800, margin: '0.25rem 0 0.5rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {reg.event.title}
                 </h3>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', color: '#64748b', fontSize: '0.85rem' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', color: '#5B6487', fontSize: '0.85rem' }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                    <Calendar size={14} color="#2563eb" /> {formatDateRange(reg.event.startDate, reg.event.endDate)}
+                    <Calendar size={14} color="#2E58D7" /> {formatDateRange(reg.event.startDate, reg.event.endDate)}
                   </span>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                    <MapPin size={14} color="#2563eb" /> {reg.event.location}
+                    <MapPin size={14} color="#2E58D7" /> {reg.event.location}
                   </span>
                 </div>
-                <p style={{ color: '#94a3b8', fontSize: '0.75rem', margin: '0.5rem 0 0' }}>
+                <p style={{ color: '#9199B5', fontSize: '0.75rem', margin: '0.5rem 0 0' }}>
                   Registered on {formatDate(reg.registeredAt)}
                 </p>
               </div>

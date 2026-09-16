@@ -29,29 +29,29 @@ const EventPagination: React.FC<Props> = ({ currentPage, totalPages, onPageChang
   }
 
   const btnStyle = (active: boolean, disabled = false): React.CSSProperties => ({
-    width: 36,
-    height: 36,
-    borderRadius: '0.5rem',
-    border: active ? 'none' : '1px solid rgba(255,255,255,0.08)',
-    background: active
-      ? 'linear-gradient(135deg, #4f46e5, #6366f1)'
-      : 'rgba(255,255,255,0.04)',
-    color: active ? '#fff' : disabled ? '#475569' : '#94a3b8',
-    fontWeight: 600,
+    width: 38,
+    height: 38,
+    borderRadius: '999px',
+    border: active ? 'none' : '1px solid #DDE2F0',
+    background: active ? '#2E58D7' : '#FFFFFF',
+    color: active ? '#FFFFFF' : disabled ? '#7C849E' : '#0B1E4A',
+    fontWeight: 700,
     fontSize: '0.875rem',
     cursor: disabled ? 'not-allowed' : 'pointer',
+    opacity: disabled ? 0.4 : 1,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     transition: 'all 0.2s',
     fontFamily: 'inherit',
+    boxShadow: active ? '0 4px 12px rgba(46, 88, 215, 0.25)' : '0 2px 6px rgba(11, 30, 74, 0.04)',
   });
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', marginTop: '2rem' }}>
-      <p style={{ color: '#64748b', fontSize: '0.8125rem', margin: 0 }}>
-        Showing <strong style={{ color: '#94a3b8' }}>{start}–{end}</strong> of{' '}
-        <strong style={{ color: '#94a3b8' }}>{total}</strong> events
+      <p style={{ color: '#5B6487', fontSize: '0.8125rem', margin: 0 }}>
+        Showing <strong style={{ color: '#0B1E4A' }}>{start}–{end}</strong> of{' '}
+        <strong style={{ color: '#0B1E4A' }}>{total}</strong> events
       </p>
       <div style={{ display: 'flex', gap: '0.375rem', alignItems: 'center' }}>
         <button
