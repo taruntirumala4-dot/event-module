@@ -13,19 +13,32 @@ import {
 
 const getBaseUrl = (): string => {
   let url = (import.meta.env.VITE_API_URL || '').trim();
-  // Remove any accidental placeholder angle brackets like <your-render-url>
-  url = url.replace(/<[^>]+>/g, '').trim();
 
-  if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-    return url.replace(/\/+$/, '');
+  // If the variable contains placeholder text like "<...>" or "your-render"
+  if (
+    !url ||
+    url.includes('<') ||
+    url.includes('>') ||
+    url.includes('your-render') ||
+    (import.meta.env.PROD && url.includes('localhost'))
+  ) {
+    return import.meta.env.PROD
+      ? 'https://event-moduleevent-module-api.onrender.com/api'
+      : 'http://localhost:5000/api';
   }
 
-  // Fallback to deployed Render backend in production
-  if (import.meta.env.PROD) {
-    return 'https://event-moduleevent-module-api.onrender.com/api';
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return url.replace(/\/+$/, '');
+    }
+  } catch {
+    // If URL parsing fails, fall back safely
   }
 
-  return 'http://localhost:5000/api';
+  return import.meta.env.PROD
+    ? 'https://event-moduleevent-module-api.onrender.com/api'
+    : 'http://localhost:5000/api';
 };
 
 const api = axios.create({
