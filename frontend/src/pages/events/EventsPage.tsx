@@ -400,7 +400,9 @@ const EventsPage: React.FC = () => {
             }}>
               <p style={{ fontSize: '1rem', margin: 0 }}>⚠️ {error}</p>
               <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginTop: '0.5rem' }}>
-                Make sure the backend server is running on port 5000.
+                {import.meta.env.PROD
+                  ? 'If the server was idle, please allow ~30 seconds for it to wake up and refresh.'
+                  : 'Make sure the backend server is running on port 5000.'}
               </p>
             </div>
           ) : (

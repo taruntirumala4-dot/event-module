@@ -11,8 +11,25 @@ import {
   StudentRegistration,
 } from '../types/event';
 
+const getBaseUrl = (): string => {
+  let url = (import.meta.env.VITE_API_URL || '').trim();
+  // Remove any accidental placeholder angle brackets like <your-render-url>
+  url = url.replace(/<[^>]+>/g, '').trim();
+
+  if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+    return url.replace(/\/+$/, '');
+  }
+
+  // Fallback to deployed Render backend in production
+  if (import.meta.env.PROD) {
+    return 'https://event-moduleevent-module-api.onrender.com/api';
+  }
+
+  return 'http://localhost:5000/api';
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: getBaseUrl(),
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -23,14 +40,19 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Global error extraction
+// Global error extraction with friendly network error message
 api.interceptors.response.use(
   (res) => res,
   (error) => {
-    const message =
+    let message =
       error?.response?.data?.message ||
       error?.message ||
       'Something went wrong. Please try again.';
+
+    if (error?.code === 'ERR_NETWORK' || message.includes('Network Error')) {
+      message = 'Backend server is waking up or unreachable. Please wait a few seconds and refresh.';
+    }
+
     return Promise.reject(new Error(message));
   }
 );
