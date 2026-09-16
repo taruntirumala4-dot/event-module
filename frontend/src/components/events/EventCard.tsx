@@ -429,16 +429,16 @@ const EventCard: React.FC<Props> = ({
         e.currentTarget.style.boxShadow = '0 4px 18px rgba(11, 30, 74, 0.06)';
       }}
     >
-      {/* 16:9 Banner Header */}
-      <div style={{ height: 160, width: '100%', flexShrink: 0 }}>
+      {/* Banner Header – half height */}
+      <div style={{ height: 80, width: '100%', flexShrink: 0 }}>
         <EventBannerGraphic event={event} />
       </div>
 
       {/* Card Content */}
-      <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ padding: '0.625rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
         
         {/* Badges Row: Default tag (Section 13) + Status badge */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
           {/* Default Tag: #EFF1F9 bg, #2E58D7 text, #E8EBF4 border */}
           <span
             style={{
@@ -484,11 +484,11 @@ const EventCard: React.FC<Props> = ({
         {/* Title: #0B1E4A font-weight 800 */}
         <h3
           style={{
-            fontSize: '1.05rem',
+            fontSize: '0.875rem',
             fontWeight: 800,
             color: '#0B1E4A',
-            margin: '0 0 0.25rem 0',
-            lineHeight: 1.3,
+            margin: '0 0 0.125rem 0',
+            lineHeight: 1.25,
             letterSpacing: '-0.02em',
             fontFamily: '"DM Sans", "Inter", system-ui, sans-serif',
           }}
@@ -499,10 +499,10 @@ const EventCard: React.FC<Props> = ({
         {/* Organizer subtitle: #5B6487 */}
         <p
           style={{
-            fontSize: '0.8125rem',
+            fontSize: '0.75rem',
             color: '#5B6487',
             fontWeight: 500,
-            margin: '0 0 0.85rem 0',
+            margin: '0 0 0.4rem 0',
           }}
         >
           {event.organizer?.name || 'Organized by Student Club'}
@@ -513,13 +513,13 @@ const EventCard: React.FC<Props> = ({
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.45rem',
-            fontSize: '0.8125rem',
+            gap: '0.35rem',
+            fontSize: '0.75rem',
             color: '#5B6487',
-            marginBottom: '0.45rem',
+            marginBottom: '0.25rem',
           }}
         >
-          <MapPin size={15} color="#2E58D7" style={{ flexShrink: 0 }} />
+          <MapPin size={12} color="#2E58D7" style={{ flexShrink: 0 }} />
           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {event.location}
           </span>
@@ -530,13 +530,13 @@ const EventCard: React.FC<Props> = ({
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.45rem',
-            fontSize: '0.8125rem',
+            gap: '0.35rem',
+            fontSize: '0.75rem',
             color: '#5B6487',
-            marginBottom: '1.25rem',
+            marginBottom: '0.5rem',
           }}
         >
-          <Calendar size={15} color="#2E58D7" style={{ flexShrink: 0 }} />
+          <Calendar size={12} color="#2E58D7" style={{ flexShrink: 0 }} />
           <span>{formatDateRange(event.startDate, event.endDate)}</span>
         </div>
 
@@ -547,12 +547,12 @@ const EventCard: React.FC<Props> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            paddingTop: '0.85rem',
+            paddingTop: '0.4rem',
             borderTop: '1px solid #E8EBF4',
           }}
         >
           {/* Entry Fee */}
-          <div style={{ fontSize: '0.85rem', color: '#5B6487' }}>
+          <div style={{ fontSize: '0.75rem', color: '#5B6487' }}>
             Entry:{' '}
             <strong style={{ color: '#0B1E4A', fontWeight: 700 }}>
               {entryFeeText}
@@ -560,7 +560,7 @@ const EventCard: React.FC<Props> = ({
           </div>
 
           {/* Action buttons */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
             {/* Secondary Button spec: #FFFFFF bg, #0B1E4A text, #DDE2F0 border, 999px radius */}
             <Link
               to={`/events/${event.id}`}
@@ -568,13 +568,13 @@ const EventCard: React.FC<Props> = ({
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '0.45rem 1.15rem',
+                padding: '0.3rem 0.75rem',
                 borderRadius: 999,
                 border: '1px solid #DDE2F0',
                 background: '#FFFFFF',
                 color: '#0B1E4A',
                 fontWeight: 600,
-                fontSize: '0.8125rem',
+                fontSize: '0.75rem',
                 textDecoration: 'none',
                 transition: 'all 0.15s ease',
               }}
@@ -597,9 +597,9 @@ const EventCard: React.FC<Props> = ({
               onClick={() => onBookmark?.(event.id, isBookmarked)}
               disabled={bookmarkLoading}
               style={{
-                width: 34,
-                height: 34,
-                borderRadius: 10,
+                width: 26,
+                height: 26,
+                borderRadius: 8,
                 border: isBookmarked ? '1px solid #C1205B' : '1px solid #DDE2F0',
                 background: isBookmarked ? '#FFE2EB' : '#FFFFFF',
                 color: isBookmarked ? '#C1205B' : '#7C849E',
@@ -624,7 +624,7 @@ const EventCard: React.FC<Props> = ({
                 }
               }}
             >
-              <Bookmark size={15} fill={isBookmarked ? '#C1205B' : 'none'} />
+              <Bookmark size={12} fill={isBookmarked ? '#C1205B' : 'none'} />
             </button>
           </div>
         </div>
