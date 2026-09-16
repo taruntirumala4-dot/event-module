@@ -1,16 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Clock, Bookmark, BookmarkCheck, ArrowRight, Calendar } from 'lucide-react';
+import { MapPin, Calendar, Bookmark } from 'lucide-react';
 import { Event } from '../../types/event';
-import {
-  formatDate,
-  formatDateRange,
-  getCategoryColor,
-  getCategoryLabel,
-  getModeLabel,
-  isDeadlinePassed,
-} from '../../utils/eventUtils';
-import EventStatusBadge from './EventStatusBadge';
+import { formatDateRange } from '../../utils/eventUtils';
 
 interface Props {
   event: Event;
@@ -20,246 +12,623 @@ interface Props {
   bookmarkLoading?: boolean;
 }
 
-// Maps category → light background pill colors (Section 13)
-const getCategoryPillStyle = () => ({
-  background: '#EFF1F9',
-  color: '#2E58D7',
-  border: '1px solid #E8EBF4',
-});
+// Visual banner renderer adhering to the Deep Navy (#091838) dark section specification
+const EventBannerGraphic: React.FC<{ event: Event }> = ({ event }) => {
+  const id = event.id;
 
-const EventCard: React.FC<Props> = ({
-  event,
-  showStatus = false,
-  onBookmark,
-  isBookmarked = false,
-  bookmarkLoading = false,
-}) => {
-  const deadlinePassed = isDeadlinePassed(event.registrationDeadline);
-  const modeLabel = getModeLabel(event.mode);
-  const registered = event._count?.registrations ?? 0;
-  const isFull = registered >= event.capacity;
-
-  const imageSrc =
-    event.image ||
-    `https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=80`;
-
-  // Generate a subtle branded bg for the image placeholder
-  const gradients = [
-    'linear-gradient(135deg, #EFF1F9 0%, #E7EDFF 100%)',
-    'linear-gradient(135deg, #E8F9FC 0%, #EFF1F9 100%)',
-    'linear-gradient(135deg, #FFE2EB 0%, #EFF1F9 100%)',
-    'linear-gradient(135deg, #EFF1F9 0%, #FFE2EB 100%)',
-    'linear-gradient(135deg, #E7EDFF 0%, #E8F9FC 100%)',
-  ];
-  const cardGradient = gradients[event.title.length % gradients.length];
-
-  return (
-    <div
-      className="event-card card-light"
-      style={{
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
-        background: '#FFFFFF',
-        border: '1px solid #DDE2F0',
-        borderRadius: 14,
-        boxShadow: '0 4px 18px rgba(11, 30, 74, 0.06)',
-      }}
-    >
-      {/* Image / Banner */}
-      <div style={{ position: 'relative', height: 160, overflow: 'hidden', flexShrink: 0, background: cardGradient }}>
-        <img
-          src={imageSrc}
-          alt={event.title}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s ease' }}
-          onError={(e) => {
-            (e.target as HTMLImageElement).style.display = 'none';
+  if (id === 'build-for-bharat') {
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(135deg, #091838 0%, #0B1E4A 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '1.25rem 1.75rem',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+          {/* Google "G" icon */}
+          <svg width="40" height="40" viewBox="0 0 24 24">
+            <path
+              fill="#4285F4"
+              d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"
+            />
+            <path
+              fill="#34A853"
+              d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.24v3.15C3.26 21.36 7.33 24 12 24z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.24C.45 8.15 0 9.92 0 12s.45 3.85 1.24 5.42l4.04-3.15z"
+            />
+            <path
+              fill="#EA4335"
+              d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.24 6.58l4.04 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
+            />
+          </svg>
+          <div>
+            <div style={{ color: '#FFFFFF', fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.15 }}>
+              Build
+            </div>
+            <div style={{ color: '#7AD9E8', fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.15 }}>
+              for Bharat
+            </div>
+          </div>
+        </div>
+        <div
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: '55%',
+            backgroundImage: `url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=80')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.35,
+            maskImage: 'linear-gradient(to right, transparent, black)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent, black)',
           }}
         />
-        {/* Subtle overlay for readability */}
+        <div style={{ position: 'relative', zIndex: 2 }}>
+          <span style={{ color: '#7AD9E8', fontSize: '0.85rem', fontWeight: 600 }}>Google</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (id === 'adobe-genai-challenge') {
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(135deg, #091838 0%, #1A0D22 50%, #0B1E4A 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '1.25rem 1.75rem',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+          <div
+            style={{
+              width: 38,
+              height: 38,
+              background: '#C1205B',
+              borderRadius: 8,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#FFFFFF',
+              fontWeight: 900,
+              fontSize: '1.4rem',
+            }}
+          >
+            A
+          </div>
+          <div>
+            <div style={{ color: '#FFFFFF', fontSize: '1.15rem', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+              Adobe
+            </div>
+            <div style={{ color: '#7AD9E8', fontSize: '1.05rem', fontWeight: 600, letterSpacing: '-0.01em' }}>
+              GenAI Challenge
+            </div>
+          </div>
+        </div>
+        <div
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: '50%',
+            backgroundImage: `url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&auto=format&fit=crop&q=80')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.3,
+            maskImage: 'linear-gradient(to right, transparent, black)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent, black)',
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (id === 'techsparks-2026') {
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(135deg, #091838 0%, #0B1E4A 50%, #1C3FA8 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '1.25rem',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(to top, rgba(11,30,74,0.45) 0%, transparent 50%)',
+            backgroundImage: `url('https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&auto=format&fit=crop&q=80')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.35,
           }}
         />
+        <div style={{ position: 'relative', zIndex: 2, textAlign: 'center' }}>
+          <span
+            style={{
+              color: '#FFFFFF',
+              fontSize: '1.25rem',
+              fontWeight: 900,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+            }}
+          >
+            TECHSPARKS <span style={{ color: '#00CBE8' }}>2026</span>
+          </span>
+        </div>
+      </div>
+    );
+  }
 
-        {/* Mode tag (top-left) */}
-        <span
+  if (id === 'microsoft-azure-workshop') {
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(135deg, #091838 0%, #0B1E4A 60%, #2E58D7 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '1.25rem 1.75rem',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px', width: 26, height: 26 }}>
+            <div style={{ background: '#F25022', borderRadius: 2 }} />
+            <div style={{ background: '#7FBA00', borderRadius: 2 }} />
+            <div style={{ background: '#00A4EF', borderRadius: 2 }} />
+            <div style={{ background: '#FFB900', borderRadius: 2 }} />
+          </div>
+          <span style={{ color: '#FFFFFF', fontSize: '1.25rem', fontWeight: 800 }}>Microsoft</span>
+        </div>
+        <div
           style={{
             position: 'absolute',
-            top: 10,
-            left: 10,
-            background: 'rgba(255,255,255,0.92)',
-            color: '#0B1E4A',
-            border: '1px solid #DDE2F0',
-            padding: '2px 10px',
-            borderRadius: '999px',
-            fontSize: '0.65rem',
-            fontWeight: 700,
-            letterSpacing: '0.04em',
-            textTransform: 'uppercase',
-            backdropFilter: 'blur(6px)',
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: '50%',
+            backgroundImage: `url('https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&auto=format&fit=crop&q=80')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.35,
+            maskImage: 'linear-gradient(to right, transparent, black)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent, black)',
           }}
-        >
-          {modeLabel}
-        </span>
+        />
+      </div>
+    );
+  }
 
-        {/* Bookmark (top-right) */}
-        {onBookmark && (
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              onBookmark(event.id, isBookmarked);
-            }}
-            disabled={bookmarkLoading}
+  if (id === 'nvidia-ai-summit-2026') {
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(135deg, #091838 0%, #0B1E4A 50%, #0F3325 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          padding: '1.25rem 1.75rem',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+          <div
             style={{
-              position: 'absolute',
-              top: 8,
-              right: 10,
-              background: isBookmarked ? '#FFE2EB' : 'rgba(255,255,255,0.92)',
-              backdropFilter: 'blur(8px)',
-              border: '1px solid #DDE2F0',
-              borderRadius: '999px',
-              width: 32,
-              height: 32,
+              width: 36,
+              height: 36,
+              borderRadius: '50%',
+              background: '#00CBE8',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              cursor: 'pointer',
-              color: isBookmarked ? '#C1205B' : '#0B1E4A',
-              transition: 'all 0.2s',
-              boxShadow: '0 2px 6px rgba(11,30,74,0.08)',
             }}
-            aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark event'}
           >
-            {isBookmarked ? <BookmarkCheck size={14} /> : <Bookmark size={14} />}
-          </button>
-        )}
-
-        {/* Status badge */}
-        {showStatus && (
-          <div style={{ position: 'absolute', bottom: 8, right: 10 }}>
-            <EventStatusBadge status={event.status} size="sm" />
+            <div style={{ width: 14, height: 14, borderRadius: '50%', background: '#091838' }} />
           </div>
-        )}
-
-        {/* Full badge */}
-        {isFull && (
-          <span style={{
+          <div>
+            <div style={{ color: '#FFFFFF', fontSize: '1.2rem', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.15 }}>
+              NVIDIA
+            </div>
+            <div style={{ color: '#7AD9E8', fontSize: '1.1rem', fontWeight: 700, letterSpacing: '-0.01em', lineHeight: 1.15 }}>
+              AI Summit
+            </div>
+          </div>
+        </div>
+        <div
+          style={{
             position: 'absolute',
-            bottom: 8,
-            left: 10,
-            background: '#FFE2EB',
-            color: '#9A2A2A',
-            border: '1px solid #C1205B',
-            padding: '2px 8px',
-            borderRadius: '999px',
-            fontSize: '0.65rem',
-            fontWeight: 700,
-          }}>
-            FULL
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: '55%',
+            backgroundImage: `url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.35,
+            maskImage: 'linear-gradient(to right, transparent, black)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent, black)',
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (id === 'hackwithindia-2026') {
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(135deg, #091838 0%, #1A0D22 50%, #0B1E4A 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          padding: '1.25rem 1.75rem',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+          <span style={{ color: '#C1205B', fontSize: '1.4rem', fontWeight: 800, fontFamily: 'monospace' }}>{'</>'}</span>
+          <span style={{ color: '#FFFFFF', fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
+            HackWithIndia
           </span>
-        )}
+        </div>
+        <div
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: '50%',
+            backgroundImage: `url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&auto=format&fit=crop&q=80')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.35,
+            maskImage: 'linear-gradient(to right, transparent, black)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent, black)',
+          }}
+        />
+      </div>
+    );
+  }
+
+  // Generic banner for any other event with deep navy base
+  return (
+    <div style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden', background: '#091838' }}>
+      <img
+        src={event.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=80'}
+        alt={event.title}
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        onError={(e) => {
+          (e.target as HTMLImageElement).src =
+            'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=80';
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(to top, rgba(9, 24, 56, 0.85) 0%, transparent 70%)',
+        }}
+      />
+    </div>
+  );
+};
+
+const EventCard: React.FC<Props> = ({
+  event,
+  onBookmark,
+  isBookmarked = false,
+  bookmarkLoading = false,
+}) => {
+  const getSubCategory = () => {
+    if (event.subCategory) return event.subCategory;
+    switch (event.category) {
+      case 'TECHNOLOGY':
+        return 'Hackathon';
+      case 'WORKSHOP':
+        return 'Workshop';
+      case 'CONFERENCE':
+        return 'Conference';
+      case 'COLLEGE_FEST':
+        return 'Tech Fest';
+      case 'SEMINAR':
+        return 'Seminar';
+      default:
+        return 'Other';
+    }
+  };
+
+  const categoryName = getSubCategory();
+
+  // Status badge adhering to locked palette:
+  // Green (#DCFCE7 / #16A34A) for Registration Open,
+  // Soft pink (#FFE2EB / #C1205B) for Closing Soon,
+  // Soft lavender/cyan (#E8F9FC / #0B1E4A) for Upcoming
+  const getStatusBadge = () => {
+    const badge = event.registrationStatusBadge || 'Registration Open';
+    if (badge === 'Closing Soon') {
+      return {
+        text: 'Closing Soon',
+        bg: '#FFE2EB',
+        color: '#C1205B',
+        dot: '#C1205B',
+      };
+    }
+    if (badge === 'Upcoming') {
+      return {
+        text: 'Upcoming',
+        bg: '#E8F9FC',
+        color: '#0B1E4A',
+        dot: '#00CBE8',
+      };
+    }
+    return {
+      text: 'Registration Open',
+      bg: '#DCFCE7',
+      color: '#16A34A',
+      dot: '#16A34A',
+    };
+  };
+
+  const status = getStatusBadge();
+  const entryFeeText = event.entryFee || 'Free';
+
+  return (
+    <div
+      style={{
+        background: '#FFFFFF',
+        borderRadius: 14,
+        border: '1px solid #DDE2F0',
+        overflow: 'hidden',
+        boxShadow: '0 4px 18px rgba(11, 30, 74, 0.06)',
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-3px)';
+        e.currentTarget.style.borderColor = '#7AD9E8';
+        e.currentTarget.style.boxShadow = '0 8px 28px rgba(11, 30, 74, 0.10)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.borderColor = '#DDE2F0';
+        e.currentTarget.style.boxShadow = '0 4px 18px rgba(11, 30, 74, 0.06)';
+      }}
+    >
+      {/* 16:9 Banner Header */}
+      <div style={{ height: 160, width: '100%', flexShrink: 0 }}>
+        <EventBannerGraphic event={event} />
       </div>
 
-      {/* Card Body */}
-      <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-
-        {/* Category tag */}
-        <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap' }}>
+      {/* Card Content */}
+      <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+        
+        {/* Badges Row: Default tag (Section 13) + Status badge */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
+          {/* Default Tag: #EFF1F9 bg, #2E58D7 text, #E8EBF4 border */}
           <span
-            className="tag-pill"
-            style={getCategoryPillStyle()}
+            style={{
+              background: '#EFF1F9',
+              color: '#2E58D7',
+              border: '1px solid #E8EBF4',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              padding: '3px 10px',
+              borderRadius: 999,
+            }}
           >
-            {getCategoryLabel(event.category)}
+            {categoryName}
+          </span>
+
+          {/* Status Badge */}
+          <span
+            style={{
+              background: status.bg,
+              color: status.color,
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              padding: '3px 10px',
+              borderRadius: 999,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+          >
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: '50%',
+                backgroundColor: status.dot,
+                display: 'inline-block',
+              }}
+            />
+            {status.text}
           </span>
         </div>
 
-        {/* Title */}
+        {/* Title: #0B1E4A font-weight 800 */}
         <h3
           style={{
-            color: '#0B1E4A',
-            fontSize: '0.9375rem',
+            fontSize: '1.05rem',
             fontWeight: 800,
+            color: '#0B1E4A',
+            margin: '0 0 0.25rem 0',
+            lineHeight: 1.3,
             letterSpacing: '-0.02em',
-            margin: 0,
-            lineHeight: 1.35,
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
+            fontFamily: '"DM Sans", "Inter", system-ui, sans-serif',
           }}
         >
           {event.title}
         </h3>
 
-        {/* Organizer snippet */}
-        {event.organizer?.name && (
-          <p style={{ fontSize: '0.75rem', color: '#5B6487', margin: 0, fontWeight: 500 }}>
-            {event.organizer.name}
-          </p>
-        )}
+        {/* Organizer subtitle: #5B6487 */}
+        <p
+          style={{
+            fontSize: '0.8125rem',
+            color: '#5B6487',
+            fontWeight: 500,
+            margin: '0 0 0.85rem 0',
+          }}
+        >
+          {event.organizer?.name || 'Organized by Student Club'}
+        </p>
 
-        {/* Meta row */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', marginTop: '0.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#5B6487', fontSize: '0.8rem' }}>
-            <Calendar size={13} style={{ flexShrink: 0, color: '#2E58D7' }} />
-            {formatDateRange(event.startDate, event.endDate)}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#5B6487', fontSize: '0.8rem' }}>
-            <MapPin size={13} style={{ flexShrink: 0, color: '#00CBE8' }} />
-            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {event.location}
-            </span>
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              fontSize: '0.8rem',
-              color: deadlinePassed ? '#9A2A2A' : '#5B6487',
-            }}
-          >
-            <Clock size={13} style={{ flexShrink: 0, color: deadlinePassed ? '#9A2A2A' : '#7C849E' }} />
-            {deadlinePassed ? 'Registration closed' : `Deadline: ${formatDate(event.registrationDeadline)}`}
-          </div>
-        </div>
-
-        {/* View Details Button (Section 5: Primary Blue pill) */}
-        <Link
-          to={`/events/${event.id}`}
+        {/* Location Row */}
+        <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.375rem',
-            padding: '0.55rem 1rem',
-            borderRadius: '999px',
-            background: deadlinePassed || isFull ? '#EFF1F9' : '#2E58D7',
-            color: deadlinePassed || isFull ? '#7C849E' : '#FFFFFF',
-            border: deadlinePassed || isFull ? '1px solid #DDE2F0' : 'none',
-            fontWeight: 700,
+            gap: '0.45rem',
             fontSize: '0.8125rem',
-            textDecoration: 'none',
-            transition: 'all 0.2s',
-            marginTop: '0.5rem',
-            boxShadow: deadlinePassed || isFull ? 'none' : '0 4px 12px rgba(46, 88, 215, 0.25)',
-          }}
-          onMouseEnter={e => {
-            if (!deadlinePassed && !isFull) {
-              (e.currentTarget as HTMLAnchorElement).style.background = '#1C3FA8';
-            }
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLAnchorElement).style.background = deadlinePassed || isFull ? '#EFF1F9' : '#2E58D7';
+            color: '#5B6487',
+            marginBottom: '0.45rem',
           }}
         >
-          {deadlinePassed ? 'View Event' : isFull ? 'Event Full' : 'View Details'}
-          <ArrowRight size={13} />
-        </Link>
+          <MapPin size={15} color="#2E58D7" style={{ flexShrink: 0 }} />
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {event.location}
+          </span>
+        </div>
+
+        {/* Date Row */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.45rem',
+            fontSize: '0.8125rem',
+            color: '#5B6487',
+            marginBottom: '1.25rem',
+          }}
+        >
+          <Calendar size={15} color="#2E58D7" style={{ flexShrink: 0 }} />
+          <span>{formatDateRange(event.startDate, event.endDate)}</span>
+        </div>
+
+        {/* Bottom Footer: Entry Fee + Secondary Button + Bookmark */}
+        <div
+          style={{
+            marginTop: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingTop: '0.85rem',
+            borderTop: '1px solid #E8EBF4',
+          }}
+        >
+          {/* Entry Fee */}
+          <div style={{ fontSize: '0.85rem', color: '#5B6487' }}>
+            Entry:{' '}
+            <strong style={{ color: '#0B1E4A', fontWeight: 700 }}>
+              {entryFeeText}
+            </strong>
+          </div>
+
+          {/* Action buttons */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            {/* Secondary Button spec: #FFFFFF bg, #0B1E4A text, #DDE2F0 border, 999px radius */}
+            <Link
+              to={`/events/${event.id}`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '0.45rem 1.15rem',
+                borderRadius: 999,
+                border: '1px solid #DDE2F0',
+                background: '#FFFFFF',
+                color: '#0B1E4A',
+                fontWeight: 600,
+                fontSize: '0.8125rem',
+                textDecoration: 'none',
+                transition: 'all 0.15s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#EFF1F9';
+                e.currentTarget.style.borderColor = '#2E58D7';
+                e.currentTarget.style.color = '#2E58D7';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#FFFFFF';
+                e.currentTarget.style.borderColor = '#DDE2F0';
+                e.currentTarget.style.color = '#0B1E4A';
+              }}
+            >
+              View details
+            </Link>
+
+            {/* Bookmark button */}
+            <button
+              onClick={() => onBookmark?.(event.id, isBookmarked)}
+              disabled={bookmarkLoading}
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: 10,
+                border: isBookmarked ? '1px solid #C1205B' : '1px solid #DDE2F0',
+                background: isBookmarked ? '#FFE2EB' : '#FFFFFF',
+                color: isBookmarked ? '#C1205B' : '#7C849E',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.15s',
+              }}
+              title={isBookmarked ? 'Saved' : 'Save Event'}
+              aria-label="Bookmark event"
+              onMouseEnter={(e) => {
+                if (!isBookmarked) {
+                  e.currentTarget.style.borderColor = '#2E58D7';
+                  e.currentTarget.style.color = '#2E58D7';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isBookmarked) {
+                  e.currentTarget.style.borderColor = '#DDE2F0';
+                  e.currentTarget.style.color = '#7C849E';
+                }
+              }}
+            >
+              <Bookmark size={15} fill={isBookmarked ? '#C1205B' : 'none'} />
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   );

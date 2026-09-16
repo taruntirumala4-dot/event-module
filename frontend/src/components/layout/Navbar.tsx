@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
@@ -6,8 +6,6 @@ import {
   Bell,
   Menu,
   X,
-  ChevronDown,
-  Calendar,
   PlusCircle,
   ShieldCheck,
   Bookmark,
@@ -22,23 +20,40 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [navSearch, setNavSearch] = useState('');
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path === '/events') {
+      return location.pathname === '/' || location.pathname.startsWith('/events');
+    }
+    return location.pathname.startsWith(path);
+  };
 
   const handleLogout = () => {
     logout();
+    setUserDropdownOpen(false);
     navigate('/login');
   };
 
-  const getRoleBadgeStyle = (role?: string) => {
-    switch (role) {
-      case 'ADMIN':
-        return { background: '#fee2e2', color: '#991b1b' };
-      case 'ORGANIZER':
-        return { background: '#fef3c7', color: '#92400e' };
-      default:
-        return { background: '#dbeafe', color: '#1e40af' };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setUserDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (navSearch.trim()) {
+      navigate(`/events?search=${encodeURIComponent(navSearch.trim())}`);
+      setSearchModalOpen(false);
+      setNavSearch('');
     }
   };
 
@@ -53,554 +68,594 @@ const Navbar: React.FC = () => {
         boxShadow: '0 4px 18px rgba(11, 30, 74, 0.04)',
       }}
     >
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 1.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', height: 64, gap: '1.5rem' }}>
-
-          {/* Brand Logo */}
-          <Link
-            to="/events"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              textDecoration: 'none',
-              flexShrink: 0,
-            }}
-          >
-            <div
+      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 1.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', height: 68, justifyContent: 'space-between' }}>
+          
+          {/* Left: Brand Logo & Links */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>
+            <Link
+              to="/events"
               style={{
-                width: 30,
-                height: 30,
-                background: 'linear-gradient(135deg, #2E58D7, #00CBE8)',
-                clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                textDecoration: 'none',
                 flexShrink: 0,
               }}
-            />
-            <span style={{ fontSize: '1.125rem', fontWeight: 800, color: '#0B1E4A', letterSpacing: '-0.035em' }}>
-              Intern<span style={{ color: '#2E58D7' }}>Atlas</span>
-            </span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', flex: 1 }} className="hidden-mobile">
-            <Link
-              to="/events"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.25rem',
-                padding: '0.4rem 0.85rem',
-                borderRadius: '999px',
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                color: isActive('/events') ? '#2E58D7' : '#0B1E4A',
-                background: isActive('/events') ? '#EFF1F9' : 'transparent',
-                textDecoration: 'none',
-                transition: 'all 0.15s',
-              }}
             >
-              Opportunities <ChevronDown size={14} />
-            </Link>
-
-            <Link
-              to="/events/create"
-              style={{
-                padding: '0.4rem 0.85rem',
-                borderRadius: '999px',
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                color: '#0B1E4A',
-                textDecoration: 'none',
-                transition: 'all 0.15s',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.color = '#2E58D7';
-                e.currentTarget.style.background = '#EFF1F9';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.color = '#0B1E4A';
-                e.currentTarget.style.background = 'transparent';
-              }}
-            >
-              For Employers
-            </Link>
-
-            <Link
-              to="/events"
-              style={{
-                padding: '0.4rem 0.85rem',
-                borderRadius: '999px',
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                color: '#0B1E4A',
-                textDecoration: 'none',
-                transition: 'all 0.15s',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.color = '#2E58D7';
-                e.currentTarget.style.background = '#EFF1F9';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.color = '#0B1E4A';
-                e.currentTarget.style.background = 'transparent';
-              }}
-            >
-              For Colleges
-            </Link>
-
-            <span
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.25rem',
-                padding: '0.4rem 0.85rem',
-                borderRadius: '999px',
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                color: '#0B1E4A',
-                cursor: 'pointer',
-                transition: 'all 0.15s',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.color = '#2E58D7';
-                e.currentTarget.style.background = '#EFF1F9';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.color = '#0B1E4A';
-                e.currentTarget.style.background = 'transparent';
-              }}
-            >
-              Resources <ChevronDown size={14} />
-            </span>
-
-            {user?.role === 'STUDENT' && (
-              <>
-                <Link
-                  to="/my-events"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.25rem',
-                    padding: '0.4rem 0.85rem',
-                    borderRadius: '999px',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    color: isActive('/my-events') ? '#2E58D7' : '#0B1E4A',
-                    background: isActive('/my-events') ? '#EFF1F9' : 'transparent',
-                    textDecoration: 'none',
-                  }}
-                >
-                  <Ticket size={14} /> My Events
-                </Link>
-                <Link
-                  to="/saved-events"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.25rem',
-                    padding: '0.4rem 0.85rem',
-                    borderRadius: '999px',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    color: isActive('/saved-events') ? '#2E58D7' : '#0B1E4A',
-                    background: isActive('/saved-events') ? '#EFF1F9' : 'transparent',
-                    textDecoration: 'none',
-                  }}
-                >
-                  <Bookmark size={14} /> Saved
-                </Link>
-              </>
-            )}
-
-            {(user?.role === 'ORGANIZER' || user?.role === 'ADMIN') && (
-              <Link
-                to="/events/create"
+              <span
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.25rem',
-                  padding: '0.4rem 0.85rem',
-                  borderRadius: '999px',
-                  fontSize: '0.875rem',
-                  fontWeight: 600,
-                  color: isActive('/events/create') ? '#2E58D7' : '#0B1E4A',
-                  background: isActive('/events/create') ? '#EFF1F9' : 'transparent',
-                  textDecoration: 'none',
-                }}
-              >
-                <PlusCircle size={14} /> Create Event
-              </Link>
-            )}
-
-            {user?.role === 'ADMIN' && (
-              <Link
-                to="/admin/events"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.25rem',
-                  padding: '0.4rem 0.85rem',
-                  borderRadius: '999px',
-                  fontSize: '0.875rem',
-                  fontWeight: 600,
-                  color: isActive('/admin/events') ? '#9A2A2A' : '#0B1E4A',
-                  background: isActive('/admin/events') ? '#FFE2EB' : 'transparent',
-                  textDecoration: 'none',
-                }}
-              >
-                <ShieldCheck size={14} /> Admin
-              </Link>
-            )}
-          </nav>
-
-          {/* Right: Search + Notification + Auth */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginLeft: 'auto', flexShrink: 0 }}>
-            {/* Search bar */}
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }} className="hidden-mobile">
-              <Search
-                size={15}
-                style={{ position: 'absolute', left: '0.875rem', color: '#7C849E', pointerEvents: 'none' }}
-              />
-              <input
-                type="text"
-                placeholder="Search events, competitions..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                style={{
-                  paddingLeft: '2.35rem',
-                  paddingRight: '1rem',
-                  paddingTop: '0.45rem',
-                  paddingBottom: '0.45rem',
-                  border: '1px solid #DDE2F0',
-                  borderRadius: '999px',
-                  fontSize: '0.8125rem',
+                  fontSize: '1.45rem',
+                  fontWeight: 800,
                   color: '#0B1E4A',
-                  background: '#FFFFFF',
-                  width: 220,
-                  outline: 'none',
-                  fontFamily: 'inherit',
-                  transition: 'border-color 0.2s, box-shadow 0.2s',
+                  letterSpacing: '-0.035em',
+                  fontFamily: '"DM Sans", "Inter", system-ui, sans-serif',
                 }}
-                onFocus={e => {
-                  e.currentTarget.style.borderColor = '#2E58D7';
-                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(46,88,215,0.12)';
-                }}
-                onBlur={e => {
-                  e.currentTarget.style.borderColor = '#DDE2F0';
-                  e.currentTarget.style.boxShadow = 'none';
-                }}
-              />
-              <span style={{
-                position: 'absolute',
-                right: '0.75rem',
-                fontSize: '0.65rem',
-                color: '#7C849E',
-                background: '#EFF1F9',
-                padding: '1px 6px',
-                borderRadius: '4px',
-                fontFamily: 'monospace',
-                border: '1px solid #DDE2F0',
-              }}>⌘K</span>
-            </div>
+              >
+                InternAtlas<span style={{ color: '#2E58D7' }}>.</span>
+              </span>
+            </Link>
 
-            {/* Notification bell (logged in) */}
-            {user && (
+            {/* Desktop Navigation Links */}
+            <nav style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="hidden-mobile">
+              <Link
+                to="/events"
+                style={{
+                  fontSize: '0.9rem',
+                  fontWeight: 600,
+                  color: '#5B6487',
+                  textDecoration: 'none',
+                  padding: '0.45rem 0.85rem',
+                  borderRadius: 999,
+                  transition: 'all 0.15s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#2E58D7';
+                  e.currentTarget.style.background = '#EFF1F9';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = '#5B6487';
+                  e.currentTarget.style.background = 'transparent';
+                }}
+              >
+                Opportunities
+              </Link>
+
+              <Link
+                to="/events"
+                style={{
+                  fontSize: '0.9rem',
+                  fontWeight: 700,
+                  color: '#2E58D7',
+                  background: '#EFF1F9',
+                  textDecoration: 'none',
+                  padding: '0.45rem 0.95rem',
+                  borderRadius: 999,
+                  transition: 'all 0.15s',
+                }}
+              >
+                Events
+              </Link>
+
+              <Link
+                to="/events?category=ACADEMIC"
+                style={{
+                  fontSize: '0.9rem',
+                  fontWeight: 600,
+                  color: '#5B6487',
+                  textDecoration: 'none',
+                  padding: '0.45rem 0.85rem',
+                  borderRadius: 999,
+                  transition: 'all 0.15s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#2E58D7';
+                  e.currentTarget.style.background = '#EFF1F9';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = '#5B6487';
+                  e.currentTarget.style.background = 'transparent';
+                }}
+              >
+                Scholarships
+              </Link>
+
+              <Link
+                to="/events?category=COLLEGE_FEST"
+                style={{
+                  fontSize: '0.9rem',
+                  fontWeight: 600,
+                  color: '#5B6487',
+                  textDecoration: 'none',
+                  padding: '0.45rem 0.85rem',
+                  borderRadius: 999,
+                  transition: 'all 0.15s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#2E58D7';
+                  e.currentTarget.style.background = '#EFF1F9';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = '#5B6487';
+                  e.currentTarget.style.background = 'transparent';
+                }}
+              >
+                For Colleges
+              </Link>
+
+              <Link
+                to="/events?category=WORKSHOP"
+                style={{
+                  fontSize: '0.9rem',
+                  fontWeight: 600,
+                  color: '#5B6487',
+                  textDecoration: 'none',
+                  padding: '0.45rem 0.85rem',
+                  borderRadius: 999,
+                  transition: 'all 0.15s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#2E58D7';
+                  e.currentTarget.style.background = '#EFF1F9';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = '#5B6487';
+                  e.currentTarget.style.background = 'transparent';
+                }}
+              >
+                Resources
+              </Link>
+            </nav>
+          </div>
+
+          {/* Right: Search, Notification & Avatar */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.15rem' }}>
+            {/* Search Trigger Button */}
+            <button
+              onClick={() => setSearchModalOpen(!searchModalOpen)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                color: '#0B1E4A',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '0.4rem',
+                borderRadius: '50%',
+                transition: 'background 0.15s',
+              }}
+              title="Search events"
+              aria-label="Search events"
+              onMouseEnter={(e) => (e.currentTarget.style.background = '#EFF1F9')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+            >
+              <Search size={19} strokeWidth={2.2} />
+            </button>
+
+            {/* Notification Bell with Red Badge */}
+            <div style={{ position: 'relative' }}>
               <button
                 style={{
-                  position: 'relative',
-                  width: 36,
-                  height: 36,
-                  border: '1px solid #DDE2F0',
-                  borderRadius: '999px',
-                  background: '#FFFFFF',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#0B1E4A',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  cursor: 'pointer',
-                  color: '#0B1E4A',
-                  transition: 'all 0.15s',
+                  padding: '0.4rem',
+                  borderRadius: '50%',
+                  transition: 'background 0.15s',
                 }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#2E58D7';
-                  (e.currentTarget as HTMLButtonElement).style.color = '#2E58D7';
-                  (e.currentTarget as HTMLButtonElement).style.background = '#EFF1F9';
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#DDE2F0';
-                  (e.currentTarget as HTMLButtonElement).style.color = '#0B1E4A';
-                  (e.currentTarget as HTMLButtonElement).style.background = '#FFFFFF';
-                }}
+                title="Notifications"
+                aria-label="Notifications"
+                onMouseEnter={(e) => (e.currentTarget.style.background = '#EFF1F9')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
               >
-                <Bell size={16} />
+                <Bell size={19} strokeWidth={2.2} />
               </button>
-            )}
+              {/* Selective pink/editorial accent dot */}
+              <span
+                style={{
+                  position: 'absolute',
+                  top: 5,
+                  right: 5,
+                  width: 8,
+                  height: 8,
+                  borderRadius: '50%',
+                  backgroundColor: '#9A2A2A',
+                  border: '2px solid #FFFFFF',
+                }}
+              />
+            </div>
 
-            {/* Auth area */}
-            {user ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                {/* Avatar circle */}
-                <div
+            {/* User Avatar with Dropdown */}
+            <div style={{ position: 'relative' }} ref={dropdownRef}>
+              <button
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  borderRadius: '50%',
+                }}
+                aria-label="User profile"
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80"
+                  alt={user ? user.name : 'User avatar'}
                   style={{
                     width: 36,
                     height: 36,
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #2E58D7, #00CBE8)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#FFFFFF',
-                    fontSize: '0.875rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    flexShrink: 0,
-                    boxShadow: '0 2px 8px rgba(46,88,215,0.2)',
+                    objectFit: 'cover',
+                    border: '2px solid #DDE2F0',
                   }}
-                  title={user.name}
-                >
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-                <div className="hidden-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#0B1E4A', lineHeight: 1.2 }}>
-                    {user.name.split(' ')[0]}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: '0.65rem',
-                      fontWeight: 700,
-                      padding: '1px 6px',
-                      borderRadius: '999px',
-                      ...getRoleBadgeStyle(user.role),
-                    }}
-                  >
-                    {user.role}
-                  </span>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  title="Logout"
-                  style={{
-                    width: 32,
-                    height: 32,
-                    border: '1px solid #DDE2F0',
-                    borderRadius: '999px',
-                    background: '#FFFFFF',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    color: '#9A2A2A',
-                    transition: 'all 0.15s',
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      'https://ui-avatars.com/api/?name=User&background=2E58D7&color=fff';
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.background = '#FFE2EB')}
-                  onMouseLeave={e => (e.currentTarget.style.background = '#FFFFFF')}
-                >
-                  <LogOut size={14} />
-                </button>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                {/* Secondary Button: Login */}
-                <Link
-                  to="/login"
-                  style={{
-                    padding: '0.5rem 1.125rem',
-                    borderRadius: '999px',
-                    fontSize: '0.8125rem',
-                    fontWeight: 600,
-                    color: '#0B1E4A',
-                    border: '1px solid #DDE2F0',
-                    background: '#FFFFFF',
-                    textDecoration: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.35rem',
-                    transition: 'all 0.15s',
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.background = '#EFF1F9';
-                    e.currentTarget.style.borderColor = '#2E58D7';
-                    e.currentTarget.style.color = '#2E58D7';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.background = '#FFFFFF';
-                    e.currentTarget.style.borderColor = '#DDE2F0';
-                    e.currentTarget.style.color = '#0B1E4A';
-                  }}
-                >
-                  <LogIn size={13} /> Login
-                </Link>
-                {/* Primary Button: Sign Up */}
-                <Link
-                  to="/register"
-                  style={{
-                    padding: '0.5rem 1.25rem',
-                    borderRadius: '999px',
-                    fontSize: '0.8125rem',
-                    fontWeight: 700,
-                    color: '#FFFFFF',
-                    background: '#2E58D7',
-                    textDecoration: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.35rem',
-                    transition: 'all 0.15s',
-                    boxShadow: '0 4px 14px rgba(46, 88, 215, 0.25)',
-                  }}
-                  onMouseEnter={e => (e.currentTarget.style.background = '#1C3FA8')}
-                  onMouseLeave={e => (e.currentTarget.style.background = '#2E58D7')}
-                >
-                  <UserPlus size={13} /> Sign Up
-                </Link>
-              </div>
-            )}
+                />
+              </button>
 
-            {/* Mobile burger */}
+              {/* Profile Dropdown Menu */}
+              {userDropdownOpen && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 8px)',
+                    right: 0,
+                    width: 240,
+                    background: '#FFFFFF',
+                    borderRadius: 14,
+                    boxShadow: '0 8px 28px rgba(11, 30, 74, 0.10)',
+                    border: '1px solid #DDE2F0',
+                    padding: '0.5rem',
+                    zIndex: 60,
+                  }}
+                >
+                  {user ? (
+                    <>
+                      <div
+                        style={{
+                          padding: '0.75rem',
+                          borderBottom: '1px solid #E8EBF4',
+                          marginBottom: '0.35rem',
+                        }}
+                      >
+                        <p style={{ margin: 0, fontWeight: 700, fontSize: '0.875rem', color: '#0B1E4A' }}>
+                          {user.name}
+                        </p>
+                        <p style={{ margin: 0, fontSize: '0.75rem', color: '#5B6487' }}>{user.email}</p>
+                        <span
+                          style={{
+                            display: 'inline-block',
+                            marginTop: '0.35rem',
+                            fontSize: '0.675rem',
+                            fontWeight: 700,
+                            padding: '2px 8px',
+                            borderRadius: '999px',
+                            background:
+                              user.role === 'ADMIN'
+                                ? '#FFE2EB'
+                                : user.role === 'ORGANIZER'
+                                ? '#E8F9FC'
+                                : '#EFF1F9',
+                            color:
+                              user.role === 'ADMIN'
+                                ? '#9A2A2A'
+                                : user.role === 'ORGANIZER'
+                                ? '#0B1E4A'
+                                : '#2E58D7',
+                          }}
+                        >
+                          {user.role}
+                        </span>
+                      </div>
+
+                      <Link
+                        to="/my-events"
+                        onClick={() => setUserDropdownOpen(false)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          padding: '0.5rem 0.75rem',
+                          borderRadius: 8,
+                          fontSize: '0.85rem',
+                          color: '#0B1E4A',
+                          textDecoration: 'none',
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = '#EFF1F9')}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                      >
+                        <Ticket size={16} color="#2E58D7" /> My Registrations
+                      </Link>
+
+                      <Link
+                        to="/saved-events"
+                        onClick={() => setUserDropdownOpen(false)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          padding: '0.5rem 0.75rem',
+                          borderRadius: 8,
+                          fontSize: '0.85rem',
+                          color: '#0B1E4A',
+                          textDecoration: 'none',
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = '#EFF1F9')}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                      >
+                        <Bookmark size={16} color="#2E58D7" /> Saved Events
+                      </Link>
+
+                      {(user.role === 'ORGANIZER' || user.role === 'ADMIN') && (
+                        <Link
+                          to="/events/create"
+                          onClick={() => setUserDropdownOpen(false)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            padding: '0.5rem 0.75rem',
+                            borderRadius: 8,
+                            fontSize: '0.85rem',
+                            color: '#2E58D7',
+                            textDecoration: 'none',
+                            fontWeight: 600,
+                          }}
+                          onMouseEnter={(e) => (e.currentTarget.style.background = '#EFF1F9')}
+                          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                        >
+                          <PlusCircle size={16} /> Create Event
+                        </Link>
+                      )}
+
+                      {user.role === 'ADMIN' && (
+                        <Link
+                          to="/admin/events"
+                          onClick={() => setUserDropdownOpen(false)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            padding: '0.5rem 0.75rem',
+                            borderRadius: 8,
+                            fontSize: '0.85rem',
+                            color: '#9A2A2A',
+                            textDecoration: 'none',
+                            fontWeight: 600,
+                          }}
+                          onMouseEnter={(e) => (e.currentTarget.style.background = '#FFE2EB')}
+                          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                        >
+                          <ShieldCheck size={16} /> Admin Portal
+                        </Link>
+                      )}
+
+                      <div style={{ height: 1, background: '#E8EBF4', margin: '0.35rem 0' }} />
+
+                      <button
+                        onClick={handleLogout}
+                        style={{
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          padding: '0.5rem 0.75rem',
+                          borderRadius: 8,
+                          fontSize: '0.85rem',
+                          color: '#9A2A2A',
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = '#FFE2EB')}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                      >
+                        <LogOut size={16} /> Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        to="/login"
+                        onClick={() => setUserDropdownOpen(false)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          padding: '0.6rem 0.75rem',
+                          borderRadius: 8,
+                          fontSize: '0.875rem',
+                          color: '#0B1E4A',
+                          textDecoration: 'none',
+                          fontWeight: 600,
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = '#EFF1F9')}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                      >
+                        <LogIn size={16} color="#2E58D7" /> Log In
+                      </Link>
+                      <Link
+                        to="/register"
+                        onClick={() => setUserDropdownOpen(false)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          padding: '0.6rem 0.75rem',
+                          fontSize: '0.875rem',
+                          color: '#FFFFFF',
+                          background: '#2E58D7',
+                          textDecoration: 'none',
+                          fontWeight: 600,
+                          marginTop: '0.35rem',
+                          borderRadius: 999,
+                          justifyContent: 'center',
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = '#1C3FA8')}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = '#2E58D7')}
+                      >
+                        <UserPlus size={16} /> Create Account
+                      </Link>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Hamburger toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden"
               style={{
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
                 display: 'none',
-                width: 36,
-                height: 36,
-                border: '1px solid #DDE2F0',
-                borderRadius: '999px',
-                background: '#FFFFFF',
                 alignItems: 'center',
                 justifyContent: 'center',
-                cursor: 'pointer',
                 color: '#0B1E4A',
               }}
-              className="show-mobile"
-              aria-label="Toggle Menu"
+              aria-label="Toggle mobile menu"
             >
-              {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div style={{
-          background: '#FFFFFF',
-          borderTop: '1px solid #DDE2F0',
-          padding: '1rem 1.5rem',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.375rem',
-          boxShadow: '0 8px 24px rgba(11, 30, 74, 0.08)',
-        }}>
-          {[
-            { to: '/events', label: 'Discover Events', icon: <Calendar size={16} /> },
-            ...(user?.role === 'STUDENT' ? [
-              { to: '/my-events', label: 'My Registered Events', icon: <Ticket size={16} /> },
-              { to: '/saved-events', label: 'Saved Events', icon: <Bookmark size={16} /> },
-            ] : []),
-            ...(user?.role === 'ORGANIZER' || user?.role === 'ADMIN' ? [
-              { to: '/events/create', label: 'Create Event', icon: <PlusCircle size={16} /> },
-            ] : []),
-            ...(user?.role === 'ADMIN' ? [
-              { to: '/admin/events', label: 'Admin Panel', icon: <ShieldCheck size={16} /> },
-            ] : []),
-          ].map(({ to, label, icon }) => (
-            <Link
-              key={to}
-              to={to}
-              onClick={() => setMobileMenuOpen(false)}
+        {/* Search Modal Bar */}
+        {searchModalOpen && (
+          <form
+            onSubmit={handleSearchSubmit}
+            style={{
+              padding: '0.75rem 0 1rem',
+              borderTop: '1px solid #E8EBF4',
+              display: 'flex',
+              gap: '0.5rem',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ position: 'relative', flex: 1 }}>
+              <Search
+                size={18}
+                style={{
+                  position: 'absolute',
+                  left: '1rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: '#7C849E',
+                }}
+              />
+              <input
+                type="text"
+                autoFocus
+                placeholder="Search by event name, domain or city..."
+                value={navSearch}
+                onChange={(e) => setNavSearch(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.65rem 1rem 0.65rem 2.75rem',
+                  borderRadius: 999,
+                  border: '1px solid #DDE2F0',
+                  outline: 'none',
+                  fontSize: '0.9rem',
+                  color: '#0B1E4A',
+                  background: '#FFFFFF',
+                }}
+              />
+            </div>
+            <button
+              type="submit"
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.625rem',
-                padding: '0.625rem 0.75rem',
-                borderRadius: '10px',
-                fontSize: '0.875rem',
+                background: '#2E58D7',
+                color: '#FFFFFF',
+                border: 'none',
+                padding: '0.65rem 1.25rem',
+                borderRadius: 999,
                 fontWeight: 600,
-                color: isActive(to) ? '#2E58D7' : '#0B1E4A',
-                textDecoration: 'none',
-                background: isActive(to) ? '#EFF1F9' : 'transparent',
+                fontSize: '0.875rem',
+                cursor: 'pointer',
+                transition: 'background 0.15s',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = '#1C3FA8')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = '#2E58D7')}
+            >
+              Search
+            </button>
+            <button
+              type="button"
+              onClick={() => setSearchModalOpen(false)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                padding: '0.5rem',
+                cursor: 'pointer',
+                color: '#5B6487',
               }}
             >
-              {icon} {label}
-            </Link>
-          ))}
-          <div style={{ borderTop: '1px solid #DDE2F0', marginTop: '0.5rem', paddingTop: '0.75rem' }}>
-            {user ? (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div>
-                  <p style={{ margin: 0, fontWeight: 700, fontSize: '0.875rem', color: '#0B1E4A' }}>{user.name}</p>
-                  <p style={{ margin: 0, fontSize: '0.75rem', color: '#5B6487' }}>{user.email}</p>
-                </div>
-                <button
-                  onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.375rem',
-                    padding: '0.5rem 0.875rem',
-                    borderRadius: '999px',
-                    fontSize: '0.8125rem',
-                    fontWeight: 600,
-                    color: '#9A2A2A',
-                    border: '1px solid #DDE2F0',
-                    background: '#FFE2EB',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <LogOut size={13} /> Logout
-                </button>
-              </div>
-            ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                <Link
-                  to="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.375rem',
-                    padding: '0.5rem',
-                    borderRadius: '999px',
-                    fontSize: '0.8125rem',
-                    fontWeight: 600,
-                    color: '#0B1E4A',
-                    border: '1px solid #DDE2F0',
-                    background: '#FFFFFF',
-                    textDecoration: 'none',
-                  }}
-                >
-                  <LogIn size={13} /> Login
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.375rem',
-                    padding: '0.5rem',
-                    borderRadius: '999px',
-                    fontSize: '0.8125rem',
-                    fontWeight: 600,
-                    color: '#FFFFFF',
-                    background: '#2E58D7',
-                    textDecoration: 'none',
-                  }}
-                >
-                  <UserPlus size={13} /> Sign Up
-                </Link>
-              </div>
-            )}
-          </div>
+              <X size={20} />
+            </button>
+          </form>
+        )}
+      </div>
+
+      {/* Mobile navigation drawer */}
+      {mobileMenuOpen && (
+        <div
+          style={{
+            background: '#FFFFFF',
+            borderTop: '1px solid #DDE2F0',
+            padding: '1rem 1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.75rem',
+          }}
+        >
+          <Link
+            to="/events"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{ fontSize: '1rem', fontWeight: 600, color: '#0B1E4A', textDecoration: 'none' }}
+          >
+            Opportunities
+          </Link>
+          <Link
+            to="/events"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{ fontSize: '1rem', fontWeight: 700, color: '#2E58D7', textDecoration: 'none' }}
+          >
+            Events
+          </Link>
+          <Link
+            to="/events"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{ fontSize: '1rem', fontWeight: 600, color: '#0B1E4A', textDecoration: 'none' }}
+          >
+            Scholarships
+          </Link>
+          <Link
+            to="/events"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{ fontSize: '1rem', fontWeight: 600, color: '#0B1E4A', textDecoration: 'none' }}
+          >
+            For Colleges
+          </Link>
+          <Link
+            to="/events"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{ fontSize: '1rem', fontWeight: 600, color: '#0B1E4A', textDecoration: 'none' }}
+          >
+            Resources
+          </Link>
         </div>
       )}
-
-      <style>{`
-        @media (max-width: 768px) {
-          .hidden-mobile { display: none !important; }
-          .show-mobile { display: flex !important; }
-        }
-      `}</style>
     </header>
   );
 };

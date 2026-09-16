@@ -112,14 +112,8 @@ const Footer: React.FC = () => (
       {/* Brand */}
       <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-          <div style={{
-            width: 24,
-            height: 24,
-            background: 'linear-gradient(135deg, #2E58D7, #00CBE8)',
-            clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
-          }} />
-          <span style={{ fontSize: '1rem', fontWeight: 800, color: '#FFFFFF' }}>
-            Intern<span style={{ color: '#00CBE8' }}>Atlas</span>
+          <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.03em' }}>
+            InternAtlas<span style={{ color: '#38BDF8' }}>.</span>
           </span>
         </div>
         <p style={{ fontSize: '0.8125rem', lineHeight: 1.6, marginTop: '0.5rem', color: '#DDE2F0' }}>

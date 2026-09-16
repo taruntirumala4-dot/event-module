@@ -1,558 +1,921 @@
-import React, { useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import EventList, { SkeletonCard } from '../../components/events/EventList';
-import EventSearch from '../../components/events/EventSearch';
-import EventFilter from '../../components/events/EventFilter';
-import EventPagination from '../../components/events/EventPagination';
+import React, { useState, useMemo } from 'react';
+import { useLocation as useRouterLocation } from 'react-router-dom';
+import {
+  Search,
+  Calendar,
+  Layers,
+  MapPin,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
+import EventCard from '../../components/events/EventCard';
 import { useEvents } from '../../hooks/useEvents';
-import { type EventCategory, type EventMode } from '../../types/event';
-import { ArrowRight, ChevronLeft, ChevronRight, Users, CheckCircle, Shield } from 'lucide-react';
+import { Event } from '../../types/event';
 
-// ─── Hero Feature Cards (Section 10 & 1) ──────────────────────────────────────
-const heroFeatureCards = [
-  {
-    label: 'Internships',
-    title: 'From classroom to career.',
-    desc: 'Internships that create real impact.',
-    bg: 'linear-gradient(135deg, #091838 0%, #0B1E4A 100%)',
-    borderColor: 'rgba(122, 217, 232, 0.25)',
-    icon: '🎓',
-  },
-  {
-    label: 'Jobs',
-    title: 'Real jobs for bright minds.',
-    desc: 'Find roles. Build what\'s next.',
-    bg: 'linear-gradient(135deg, #0B1E4A 0%, #2E58D7 100%)',
-    borderColor: 'rgba(46, 88, 215, 0.35)',
-    icon: '💼',
-  },
-  {
-    label: 'Competitions',
-    title: 'Compete. Create. Grow.',
-    desc: 'Hackathons, contests, events and more.',
-    bg: 'linear-gradient(135deg, #091838 0%, #1C3FA8 100%)',
-    borderColor: 'rgba(0, 203, 232, 0.25)',
-    icon: '🏆',
-  },
-];
-
-// ─── Category Grid (Section 12) ───────────────────────────────────────────────
-const categories = [
-  { icon: '💼', label: 'Internships', variant: 'default' },
-  { icon: '👔', label: 'Jobs', variant: 'default' },
-  { icon: '🏆', label: 'Competitions', variant: 'default' },
-  { icon: '💻', label: 'Hackathons', variant: 'cyan' },
-  { icon: '⭐', label: 'Contests', variant: 'default' },
-  { icon: '📊', label: 'Quizzes', variant: 'cyan' },
-  { icon: '📅', label: 'Events', variant: 'cyan' },
-  { icon: '🏫', label: 'College Festivals', variant: 'default' },
-  { icon: '🎭', label: 'Cultural Events', variant: 'default' },
-];
-
-// ─── Featured Cards (Section 10 Dark Sections) ───────────────────────────────
-const featuredItems = [
-  {
-    brand: 'Google',
-    brandColor: '#00CBE8',
-    bgColor: '#091838',
-    title: 'Build for Bharat',
-    subtitle: 'Google Solution Challenge',
-    tag: 'Registrations open',
-  },
-  {
-    brand: 'Adobe',
-    brandColor: '#C1205B',
-    bgColor: '#091838',
-    title: 'Create what\'s next.',
-    subtitle: 'Adobe GenAI Challenge',
-    tag: 'Ends 30 Sep 2026',
-  },
-  {
-    brand: '🏅',
-    brandColor: '#7AD9E8',
-    bgColor: '#091838',
-    title: 'Smart India Hackathon 2026',
-    subtitle: 'Innovate. Solve. Impact.',
-    tag: 'Registrations open',
-  },
-  {
-    brand: 'unstop',
-    brandColor: '#2E58D7',
-    bgColor: '#091838',
-    title: 'National Case Study Challenge',
-    subtitle: 'Think. Solve. Stand out.',
-    tag: 'Ends 15 Oct 2026',
-  },
-  {
-    brand: 'TED',
-    brandColor: '#9A2A2A',
-    bgColor: '#091838',
-    title: 'Ideas that move India.',
-    subtitle: 'Campus Events',
-    tag: 'Explore events',
-  },
-];
+// Custom Rupee Icon
+const RupeeIcon = ({ size = 16, color = 'currentColor' }: { size?: number; color?: string }) => (
+  <span style={{ fontSize: size, fontWeight: 700, color, lineHeight: 1, display: 'inline-block' }}>₹</span>
+);
 
 const EventsPage: React.FC = () => {
-  const [search, setSearch] = useState('');
-  const [localFilters, setLocalFilters] = useState<{
-    category: EventCategory | '';
-    mode: EventMode | '';
-    location: string;
-    date: string;
-  }>({ category: '', mode: '', location: '', date: '' });
+  const routerLocation = useRouterLocation();
+  const searchParams = new URLSearchParams(routerLocation.search);
+  const initialCategory = searchParams.get('category') || '';
+  const initialSearch = searchParams.get('search') || '';
 
-  const { data, loading, error, filters, updateFilters, setPage } = useEvents({ page: 1, limit: 9 });
+  // Search state
+  const [searchInput, setSearchInput] = useState(initialSearch);
+  const [appliedSearch, setAppliedSearch] = useState(initialSearch);
 
-  const searchTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Quick dropdown filter states
+  const [dateFilter, setDateFilter] = useState('Anytime');
+  const [typeDropdown, setTypeDropdown] = useState('All Types');
+  const [cityDropdown, setCityDropdown] = useState('All Cities');
+  const [feeDropdown, setFeeDropdown] = useState('All');
 
-  const handleSearch = useCallback(
-    (value: string) => {
-      setSearch(value);
-      if (searchTimer.current) clearTimeout(searchTimer.current);
-      searchTimer.current = setTimeout(() => {
-        updateFilters({ search: value });
-      }, 400);
-    },
-    [updateFilters]
+  // Sidebar accordion toggle states
+  const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({
+    type: true,
+    location: true,
+    fee: true,
+    date: true,
+  });
+
+  // Sidebar checkbox selections
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(
+    initialCategory ? [initialCategory] : []
   );
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [selectedFees, setSelectedFees] = useState<string[]>([]);
+  const [selectedDates, setSelectedDates] = useState<string[]>([]);
 
-  const handleFilterChange = (f: Partial<typeof localFilters>) => {
-    const updated = { ...localFilters, ...f };
-    setLocalFilters(updated);
-    updateFilters({
-      category: updated.category || undefined,
-      mode: updated.mode || undefined,
-      location: updated.location || undefined,
-      date: updated.date || undefined,
+  // Sorting
+  const [sortBy, setSortBy] = useState<'Latest' | 'Soonest' | 'Popular'>('Latest');
+
+  // Fetch from useEvents hook
+  const { data, loading } = useEvents({ page: 1, limit: 100 });
+
+  // Toggle accordion section
+  const toggleSection = (section: string) => {
+    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
+
+  // Toggle filter item helper
+  const toggleItem = (list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>, item: string) => {
+    if (list.includes(item)) {
+      setList(list.filter((x) => x !== item));
+    } else {
+      setList([...list, item]);
+    }
+  };
+
+  // Clear all filters
+  const handleClearFilters = () => {
+    setSearchInput('');
+    setAppliedSearch('');
+    setDateFilter('Anytime');
+    setTypeDropdown('All Types');
+    setCityDropdown('All Cities');
+    setFeeDropdown('All');
+    setSelectedTypes([]);
+    setSelectedLocations([]);
+    setSelectedFees([]);
+    setSelectedDates([]);
+  };
+
+  // Process and filter the events
+  const filteredEvents = useMemo(() => {
+    const rawEvents: Event[] = data?.events || [];
+
+    return rawEvents.filter((event) => {
+      // 1. Text search
+      if (appliedSearch.trim()) {
+        const q = appliedSearch.toLowerCase();
+        const matchTitle = event.title.toLowerCase().includes(q);
+        const matchLoc = event.location.toLowerCase().includes(q);
+        const matchDesc = event.description.toLowerCase().includes(q);
+        const matchOrg = event.organizer?.name?.toLowerCase().includes(q);
+        if (!matchTitle && !matchLoc && !matchDesc && !matchOrg) return false;
+      }
+
+      // 2. Type filter (sidebar checkboxes + dropdown)
+      const subCat = event.subCategory || (event.category === 'TECHNOLOGY' ? 'Hackathon' : event.category);
+      if (selectedTypes.length > 0) {
+        const matchesAnyType = selectedTypes.some(
+          (t) =>
+            subCat.toLowerCase() === t.toLowerCase() ||
+            event.category.toLowerCase() === t.toLowerCase()
+        );
+        if (!matchesAnyType) return false;
+      }
+      if (typeDropdown !== 'All Types' && !subCat.toLowerCase().includes(typeDropdown.toLowerCase())) {
+        return false;
+      }
+
+      // 3. Location filter (sidebar checkboxes + dropdown)
+      if (selectedLocations.length > 0) {
+        const matchesAnyLoc = selectedLocations.some((loc) => {
+          if (loc === 'Others') {
+            return !['Chennai', 'Bengaluru', 'Hyderabad', 'Pune', 'Delhi'].some((city) =>
+              event.location.toLowerCase().includes(city.toLowerCase())
+            );
+          }
+          return event.location.toLowerCase().includes(loc.toLowerCase());
+        });
+        if (!matchesAnyLoc) return false;
+      }
+      if (cityDropdown !== 'All Cities' && !event.location.toLowerCase().includes(cityDropdown.toLowerCase())) {
+        return false;
+      }
+
+      // 4. Entry fee filter (sidebar checkboxes + dropdown)
+      const isFree = !event.entryFee || event.entryFee.toLowerCase() === 'free';
+      if (selectedFees.length > 0) {
+        const wantFree = selectedFees.includes('Free');
+        const wantPaid = selectedFees.includes('Paid');
+        if (wantFree && !wantPaid && !isFree) return false;
+        if (wantPaid && !wantFree && isFree) return false;
+      }
+      if (feeDropdown === 'Free' && !isFree) return false;
+      if (feeDropdown === 'Paid' && isFree) return false;
+
+      return true;
     });
-  };
+  }, [
+    data,
+    appliedSearch,
+    selectedTypes,
+    typeDropdown,
+    selectedLocations,
+    cityDropdown,
+    selectedFees,
+    feeDropdown,
+  ]);
 
-  const clearFilters = () => {
-    setSearch('');
-    setLocalFilters({ category: '', mode: '', location: '', date: '' });
-    updateFilters({ search: '', category: undefined, mode: undefined, location: undefined, date: undefined });
-  };
+  // Sort events
+  const sortedEvents = useMemo(() => {
+    const list = [...filteredEvents];
+    if (sortBy === 'Soonest') {
+      return list.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+    }
+    if (sortBy === 'Popular') {
+      return list.sort((a, b) => (b._count?.registrations ?? 0) - (a._count?.registrations ?? 0));
+    }
+    // Default: 'Latest'
+    return list;
+  }, [filteredEvents, sortBy]);
 
-  const hasActiveFilters = search || localFilters.category || localFilters.mode || localFilters.location || localFilters.date;
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAppliedSearch(searchInput);
+  };
 
   return (
-    <div>
-      {/* ══════════════ HERO SECTION (Section 7) ══════════════ */}
-      <section style={{
-        background: 'linear-gradient(135deg, #FFFFFF 0%, #EFF1F9 68%, #FFE2EB 100%)',
-        padding: '3rem 1.5rem 2.5rem',
-        borderBottom: '1px solid #DDE2F0',
-      }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr auto', gap: '2rem', alignItems: 'center' }}>
-          {/* Left: Headline */}
-          <div>
-            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: '#2E58D7', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.75rem' }}>
-              INDIA'S OPPORTUNITY PLATFORM
-            </p>
-            <h1 style={{
-              fontSize: 'clamp(2rem, 5vw, 3.25rem)',
-              fontWeight: 800,
-              color: '#0B1E4A',
-              margin: '0 0 0.5rem',
-              lineHeight: 1.1,
-              letterSpacing: '-0.035em',
-            }}>
-              Your next{' '}
-              <span className="editorial-italic" style={{
-                fontFamily: '"DM Serif Display", Georgia, serif',
-                fontStyle: 'italic',
-                color: '#9A2A2A',
-                fontWeight: 400,
-              }}>
-                chapter
-              </span>{' '}
-              starts here.
-            </h1>
-            <p style={{ fontSize: '1rem', color: '#5B6487', margin: '0 0 2rem', maxWidth: 460, lineHeight: 1.6 }}>
-              Internships, jobs, competitions, hackathons, events and more — all in one place for every student in India.
-            </p>
-
-            {/* CTA Buttons (Section 5: Primary Blue + Pill Radius) */}
-            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
-              <Link to="/register" style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.75rem 1.75rem',
-                borderRadius: '999px',
-                background: '#2E58D7',
-                color: '#FFFFFF',
-                fontWeight: 700,
-                fontSize: '0.9375rem',
-                textDecoration: 'none',
-                boxShadow: '0 4px 14px rgba(46, 88, 215, 0.25)',
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#1C3FA8')}
-              onMouseLeave={e => (e.currentTarget.style.background = '#2E58D7')}>
-                Create your free profile →
-              </Link>
-              <Link to="/events" onClick={clearFilters} style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.75rem 1.75rem',
-                borderRadius: '999px',
-                background: '#FFFFFF',
-                color: '#0B1E4A',
-                fontWeight: 600,
-                fontSize: '0.9375rem',
-                textDecoration: 'none',
-                border: '1px solid #DDE2F0',
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = '#EFF1F9';
-                e.currentTarget.style.borderColor = '#2E58D7';
-                e.currentTarget.style.color = '#2E58D7';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = '#FFFFFF';
-                e.currentTarget.style.borderColor = '#DDE2F0';
-                e.currentTarget.style.color = '#0B1E4A';
-              }}>
-                Explore opportunities
-              </Link>
+    <div style={{ background: '#EFF1F9', minHeight: '100vh', paddingBottom: '4rem' }}>
+      
+      {/* ══════════════ 7. HERO SECTION (Theme Spec locked) ══════════════ */}
+      <section
+        style={{
+          background: 'linear-gradient(135deg, #FFFFFF 0%, #EFF1F9 68%, #FFE2EB 100%)',
+          borderBottom: '1px solid #DDE2F0',
+          padding: '2.5rem 1.5rem 2.25rem',
+          position: 'relative',
+        }}
+      >
+        <div style={{ maxWidth: 1320, margin: '0 auto' }}>
+          {/* Top Hero Row: Headline on left + Doodle Photo Graphic on right */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '2rem',
+              flexWrap: 'wrap',
+              marginBottom: '2rem',
+            }}
+          >
+            {/* Left Headline */}
+            <div style={{ maxWidth: 640 }}>
+              <div
+                style={{
+                  color: '#2E58D7',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  marginBottom: '0.65rem',
+                }}
+              >
+                TECH EVENTS
+              </div>
+              <h1
+                style={{
+                  fontSize: 'clamp(2.4rem, 4.5vw, 3.4rem)',
+                  fontWeight: 800,
+                  color: '#0B1E4A',
+                  margin: '0 0 0.75rem 0',
+                  letterSpacing: '-0.035em',
+                  lineHeight: 1.15,
+                  fontFamily: '"DM Sans", "Inter", system-ui, sans-serif',
+                }}
+              >
+                Discover <span style={{ color: '#2E58D7' }}>Tech Events</span>
+              </h1>
+              <p
+                style={{
+                  fontSize: '1.05rem',
+                  color: '#5B6487',
+                  margin: 0,
+                  lineHeight: 1.6,
+                }}
+              >
+                Explore hackathons, workshops, tech fests and more happening across colleges.
+              </p>
             </div>
 
-            {/* Trust badges */}
-            <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-              {[
-                { icon: <Users size={15} />, text: '100% free for students' },
-                { icon: <CheckCircle size={15} />, text: 'Verified opportunities' },
-                { icon: <Shield size={15} />, text: 'Trusted by 500+ companies' },
-              ].map(({ icon, text }) => (
-                <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.8125rem', color: '#5B6487', fontWeight: 500 }}>
-                  <span style={{ color: '#00CBE8' }}>{icon}</span>
-                  {text}
+            {/* Right: Graphic with Organic Shape Mask, Crowd Photo & Doodles */}
+            <div
+              style={{
+                position: 'relative',
+                width: 320,
+                height: 180,
+                flexShrink: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {/* Doodle annotations */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: -5,
+                  top: 15,
+                  zIndex: 4,
+                  textAlign: 'right',
+                  fontFamily: 'cursive, "Segoe Print", "Comic Sans MS", sans-serif',
+                }}
+              >
+                <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0B1E4A', lineHeight: 1.1 }}>
+                  Code
                 </div>
-              ))}
+                <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0B1E4A', lineHeight: 1.1, marginTop: 4 }}>
+                  Connect
+                </div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0B1E4A', lineHeight: 1.1, marginTop: 4 }}>
+                  Create
+                </div>
+                {/* Curved hand-drawn editorial red arrow pointing right */}
+                <div style={{ marginTop: 2, display: 'flex', justifyContent: 'flex-end' }}>
+                  <svg width="34" height="28" viewBox="0 0 34 28" fill="none">
+                    <path
+                      d="M2 10C8 10 18 12 28 22M28 22L20 22M28 22L26 14"
+                      stroke="#9A2A2A"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Cyan sparkle accents */}
+              <div
+                style={{
+                  position: 'absolute',
+                  right: 15,
+                  top: 5,
+                  zIndex: 4,
+                  color: '#00CBE8',
+                  fontSize: '1.4rem',
+                  fontWeight: 900,
+                }}
+              >
+                ✦
+              </div>
+              <div
+                style={{
+                  position: 'absolute',
+                  right: 5,
+                  top: 35,
+                  zIndex: 4,
+                  color: '#7AD9E8',
+                  fontSize: '1rem',
+                  fontWeight: 900,
+                }}
+              >
+                +
+              </div>
+
+              {/* Organic curved shape container with crowd photo (Deep Navy border/base) */}
+              <div
+                style={{
+                  width: 250,
+                  height: 160,
+                  marginLeft: 'auto',
+                  borderRadius: '35% 65% 55% 45% / 45% 40% 60% 55%',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  boxShadow: '0 10px 25px -5px rgba(11, 30, 74, 0.20)',
+                  border: '3px solid #FFFFFF',
+                  background: '#091838',
+                }}
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=80"
+                  alt="Tech conference audience"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '30%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    background: 'rgba(9, 24, 56, 0.75)',
+                    backdropFilter: 'blur(4px)',
+                    padding: '2px 10px',
+                    borderRadius: 4,
+                    color: '#FFFFFF',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                  }}
+                >
+                  Google
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Right: Feature Cards (Section 10 Dark/Navy System) */}
-          <div style={{ display: 'flex', gap: '0.75rem', flexShrink: 0 }} className="hero-cards-hide">
-            {heroFeatureCards.map((card) => (
-              <div
-                key={card.label}
+          {/* ══════════════ SEARCH BAR & FILTER STRIP ══════════════ */}
+          <div
+            style={{
+              background: '#FFFFFF',
+              borderRadius: 14,
+              border: '1px solid #DDE2F0',
+              boxShadow: '0 4px 18px rgba(11, 30, 74, 0.06)',
+              padding: '0.85rem 1.25rem',
+            }}
+          >
+            {/* Search Input Box */}
+            <form onSubmit={handleSearchSubmit} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <Search size={20} color="#7C849E" style={{ flexShrink: 0 }} />
+              <input
+                type="text"
+                placeholder="Search by event name, domain or city..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
                 style={{
-                  width: 145,
-                  borderRadius: '14px',
-                  background: card.bg,
-                  border: `1px solid ${card.borderColor}`,
-                  padding: '1.25rem 1rem',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  minHeight: 205,
-                  position: 'relative',
-                  overflow: 'hidden',
+                  flex: 1,
+                  border: 'none',
+                  outline: 'none',
+                  fontSize: '0.95rem',
+                  color: '#0B1E4A',
+                  background: 'transparent',
+                }}
+              />
+              <button
+                type="submit"
+                style={{
+                  background: '#2E58D7',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  borderRadius: 999,
+                  padding: '0.65rem 1.75rem',
+                  fontSize: '0.925rem',
+                  fontWeight: 600,
                   cursor: 'pointer',
-                  boxShadow: '0 4px 18px rgba(11, 30, 74, 0.08)',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  transition: 'background 0.15s',
+                  boxShadow: '0 4px 14px rgba(46, 88, 215, 0.25)',
                 }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 8px 28px rgba(11, 30, 74, 0.14)';
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 18px rgba(11, 30, 74, 0.08)';
+                onMouseEnter={(e) => (e.currentTarget.style.background = '#1C3FA8')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = '#2E58D7')}
+              >
+                Search
+              </button>
+            </form>
+
+            <div style={{ height: 1, background: '#E8EBF4', margin: '0.85rem 0' }} />
+
+            {/* Quick Filter Strip */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1.5rem',
+                flexWrap: 'wrap',
+              }}
+            >
+              {/* Date Filter Dropdown */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.875rem', color: '#5B6487' }}>
+                <Calendar size={16} color="#2E58D7" />
+                <span style={{ fontWeight: 500 }}>Date</span>
+                <select
+                  value={dateFilter}
+                  onChange={(e) => setDateFilter(e.target.value)}
+                  style={{
+                    border: 'none',
+                    background: 'transparent',
+                    fontWeight: 700,
+                    color: '#0B1E4A',
+                    fontSize: '0.875rem',
+                    cursor: 'pointer',
+                    outline: 'none',
+                  }}
+                >
+                  <option value="Anytime">Anytime</option>
+                  <option value="Today">Today</option>
+                  <option value="This Week">This Week</option>
+                  <option value="This Month">This Month</option>
+                </select>
+              </div>
+
+              {/* Event Type Filter Dropdown */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.875rem', color: '#5B6487' }}>
+                <Layers size={16} color="#2E58D7" />
+                <span style={{ fontWeight: 500 }}>Event Type</span>
+                <select
+                  value={typeDropdown}
+                  onChange={(e) => setTypeDropdown(e.target.value)}
+                  style={{
+                    border: 'none',
+                    background: 'transparent',
+                    fontWeight: 700,
+                    color: '#0B1E4A',
+                    fontSize: '0.875rem',
+                    cursor: 'pointer',
+                    outline: 'none',
+                  }}
+                >
+                  <option value="All Types">All Types</option>
+                  <option value="Hackathon">Hackathons</option>
+                  <option value="Workshop">Workshops</option>
+                  <option value="Conference">Conferences</option>
+                  <option value="Tech Fest">Tech Fests</option>
+                  <option value="Seminar">Seminars</option>
+                </select>
+              </div>
+
+              {/* Location Filter Dropdown */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.875rem', color: '#5B6487' }}>
+                <MapPin size={16} color="#2E58D7" />
+                <span style={{ fontWeight: 500 }}>Location</span>
+                <select
+                  value={cityDropdown}
+                  onChange={(e) => setCityDropdown(e.target.value)}
+                  style={{
+                    border: 'none',
+                    background: 'transparent',
+                    fontWeight: 700,
+                    color: '#0B1E4A',
+                    fontSize: '0.875rem',
+                    cursor: 'pointer',
+                    outline: 'none',
+                  }}
+                >
+                  <option value="All Cities">All Cities</option>
+                  <option value="Chennai">Chennai</option>
+                  <option value="Bengaluru">Bengaluru</option>
+                  <option value="Hyderabad">Hyderabad</option>
+                  <option value="Pune">Pune</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Noida">Noida</option>
+                </select>
+              </div>
+
+              {/* Entry Fee Filter Dropdown */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.875rem', color: '#5B6487' }}>
+                <RupeeIcon size={16} color="#2E58D7" />
+                <span style={{ fontWeight: 500 }}>Entry Fee</span>
+                <select
+                  value={feeDropdown}
+                  onChange={(e) => setFeeDropdown(e.target.value)}
+                  style={{
+                    border: 'none',
+                    background: 'transparent',
+                    fontWeight: 700,
+                    color: '#0B1E4A',
+                    fontSize: '0.875rem',
+                    cursor: 'pointer',
+                    outline: 'none',
+                  }}
+                >
+                  <option value="All">All</option>
+                  <option value="Free">Free</option>
+                  <option value="Paid">Paid</option>
+                </select>
+              </div>
+
+              {/* Clear Filters Link */}
+              <button
+                type="button"
+                onClick={handleClearFilters}
+                style={{
+                  marginLeft: 'auto',
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#2E58D7',
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
+                  cursor: 'pointer',
+                  padding: '0.25rem 0.5rem',
+                  borderRadius: 6,
                 }}
               >
-                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{card.icon}</div>
-                <div>
-                  <p style={{ fontSize: '1rem', fontWeight: 800, color: '#FFFFFF', margin: '0 0 0.25rem', lineHeight: 1.25, letterSpacing: '-0.02em' }}>
-                    {card.title}
-                  </p>
-                  <p style={{ fontSize: '0.7rem', color: '#DDE2F0', margin: '0 0 1rem', lineHeight: 1.4 }}>
-                    {card.desc}
-                  </p>
-                  <span style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.25rem',
-                    fontSize: '0.7rem',
-                    fontWeight: 700,
-                    color: '#FFFFFF',
-                    background: 'rgba(255,255,255,0.18)',
-                    padding: '0.2rem 0.6rem',
-                    borderRadius: '999px',
-                    backdropFilter: 'blur(4px)',
-                  }}>
-                    {card.label} <ArrowRight size={10} />
-                  </span>
-                </div>
-              </div>
-            ))}
+                Clear Filters
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '2rem 1.5rem' }}>
-
-        {/* ══════════════ CATEGORY GRID (Section 12) ══════════════ */}
-        <section style={{ marginBottom: '2.5rem' }}>
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            {categories.map((cat) => {
-              const catMap: Record<string, EventCategory> = {
-                'Competitions': 'OTHER' as EventCategory,
-                'Hackathons': 'TECHNOLOGY' as EventCategory,
-                'Events': 'CULTURAL' as EventCategory,
-                'College Festivals': 'COLLEGE_FEST' as EventCategory,
-                'Cultural Events': 'CULTURAL' as EventCategory,
-                'Contests': 'ACADEMIC' as EventCategory,
-                'Quizzes': 'WORKSHOP' as EventCategory,
-              };
-              const isSelected = catMap[cat.label] && localFilters.category === catMap[cat.label];
-              const isCyan = cat.variant === 'cyan';
-
-              const cardBg = isSelected ? '#FFE2EB' : isCyan ? '#E8F9FC' : '#FFFFFF';
-              const cardBorder = isSelected ? '#C1205B' : isCyan ? '#7AD9E8' : '#DDE2F0';
-
-              return (
-                <button
-                  key={cat.label}
-                  className="category-btn"
-                  style={{
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '0.375rem',
-                    minWidth: 80,
-                    background: cardBg,
-                    borderColor: cardBorder,
-                    borderRadius: '14px',
-                    boxShadow: '0 4px 18px rgba(11, 30, 74, 0.04)',
-                  }}
-                  onClick={() => {
-                    if (catMap[cat.label]) {
-                      if (isSelected) {
-                        handleFilterChange({ category: '' });
-                      } else {
-                        handleFilterChange({ category: catMap[cat.label] });
-                      }
-                    } else {
-                      clearFilters();
-                    }
-                  }}
-                >
-                  <span style={{ fontSize: '1.5rem' }}>{cat.icon}</span>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#0B1E4A', textAlign: 'center' }}>
-                    {cat.label}
-                  </span>
-                </button>
-              );
-            })}
+      {/* ══════════════ MAIN CONTENT CONTAINER ══════════════ */}
+      <div style={{ maxWidth: 1320, margin: '2rem auto 0', padding: '0 1.5rem' }}>
+        
+        {/* Results Counter & Sort Header */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1.5rem',
+          }}
+        >
+          <div style={{ fontSize: '1.125rem', fontWeight: 800, color: '#0B1E4A' }}>
+            Showing {sortedEvents.length} tech events
           </div>
-        </section>
 
-        {/* ══════════════ FEATURED (Section 10 Dark Sections) ══════════════ */}
-        <section style={{ marginBottom: '2.5rem' }}>
-          <div className="section-header">
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
-              <h2 className="section-title">Featured</h2>
-              <span className="section-subtitle">Handpicked opportunities, events and stories for you.</span>
-            </div>
-            <div style={{ display: 'flex', gap: '0.375rem' }}>
-              <button style={{
-                width: 32,
-                height: 32,
-                borderRadius: '999px',
-                border: '1px solid #DDE2F0',
-                background: '#FFFFFF',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
+          {/* Sort By Dropdown (Secondary button pill styling) */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              fontSize: '0.875rem',
+              color: '#5B6487',
+              background: '#FFFFFF',
+              border: '1px solid #DDE2F0',
+              padding: '0.45rem 1rem',
+              borderRadius: 999,
+            }}
+          >
+            <span>Sort by:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as 'Latest' | 'Soonest' | 'Popular')}
+              style={{
+                border: 'none',
+                background: 'transparent',
+                fontWeight: 700,
                 color: '#0B1E4A',
-                boxShadow: '0 2px 8px rgba(11, 30, 74, 0.04)',
-                transition: 'all 0.15s',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.borderColor = '#7AD9E8';
-                e.currentTarget.style.color = '#2E58D7';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.borderColor = '#DDE2F0';
-                e.currentTarget.style.color = '#0B1E4A';
-              }}>
-                <ChevronLeft size={16} />
-              </button>
-              <button style={{
-                width: 32,
-                height: 32,
-                borderRadius: '999px',
-                border: '1px solid #DDE2F0',
-                background: '#FFFFFF',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                fontSize: '0.875rem',
                 cursor: 'pointer',
-                color: '#0B1E4A',
-                boxShadow: '0 2px 8px rgba(11, 30, 74, 0.04)',
-                transition: 'all 0.15s',
+                outline: 'none',
               }}
-              onMouseEnter={e => {
-                e.currentTarget.style.borderColor = '#7AD9E8';
-                e.currentTarget.style.color = '#2E58D7';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.borderColor = '#DDE2F0';
-                e.currentTarget.style.color = '#0B1E4A';
-              }}>
-                <ChevronRight size={16} />
-              </button>
-            </div>
+            >
+              <option value="Latest">Latest</option>
+              <option value="Soonest">Happening Soonest</option>
+              <option value="Popular">Most Popular</option>
+            </select>
           </div>
-          <div className="scroll-x">
-            {featuredItems.map((item, i) => (
-              <div
-                key={i}
-                className="featured-card"
+        </div>
+
+        {/* 2-Column Layout: Sidebar (Left) + Event Grid (Right) */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '270px minmax(0, 1fr)',
+            gap: '2rem',
+            alignItems: 'flex-start',
+          }}
+          className="responsive-events-grid"
+        >
+          {/* ══════════════ LEFT SIDEBAR: "Filter by" ══════════════ */}
+          <aside
+            style={{
+              background: '#FFFFFF',
+              borderRadius: 14,
+              border: '1px solid #DDE2F0',
+              padding: '1.5rem',
+              boxShadow: '0 4px 18px rgba(11, 30, 74, 0.06)',
+            }}
+          >
+            <h2
+              style={{
+                fontSize: '1.1rem',
+                fontWeight: 800,
+                color: '#0B1E4A',
+                margin: '0 0 1.25rem 0',
+                letterSpacing: '-0.02em',
+              }}
+            >
+              Filter by
+            </h2>
+
+            {/* 1. Event Type Section */}
+            <div style={{ borderBottom: '1px solid #E8EBF4', paddingBottom: '1.15rem', marginBottom: '1.15rem' }}>
+              <button
+                onClick={() => toggleSection('type')}
                 style={{
-                  minWidth: 210,
-                  minHeight: 240,
-                  background: '#091838',
-                  border: '1px solid rgba(221, 226, 240, 0.14)',
-                  padding: '1.25rem',
+                  width: '100%',
                   display: 'flex',
-                  flexDirection: 'column',
                   justifyContent: 'space-between',
-                  borderRadius: 14,
-                  boxShadow: '0 4px 18px rgba(11, 30, 74, 0.12)',
+                  alignItems: 'center',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  fontSize: '0.925rem',
+                  fontWeight: 700,
+                  color: '#0B1E4A',
+                  marginBottom: openSections.type ? '0.75rem' : 0,
                 }}
               >
-                {/* Brand */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '1.1rem', fontWeight: 900, color: item.brandColor }}>{item.brand}</span>
-                  <button style={{
-                    width: 26,
-                    height: 26,
-                    borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.08)',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: '#7AD9E8',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.75rem',
-                  }}>♡</button>
+                <span>Event Type</span>
+                {openSections.type ? <ChevronUp size={16} color="#7C849E" /> : <ChevronDown size={16} color="#7C849E" />}
+              </button>
+
+              {openSections.type && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
+                  {[
+                    { name: 'Hackathon', count: 8 },
+                    { name: 'Workshop', count: 7 },
+                    { name: 'Conference', count: 5 },
+                    { name: 'Tech Fest', count: 3 },
+                    { name: 'Seminar', count: 2 },
+                    { name: 'Other', count: 2 },
+                  ].map((item) => (
+                    <label
+                      key={item.name}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.6rem',
+                        fontSize: '0.85rem',
+                        color: '#5B6487',
+                        cursor: 'pointer',
+                        userSelect: 'none',
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedTypes.includes(item.name)}
+                        onChange={() => toggleItem(selectedTypes, setSelectedTypes, item.name)}
+                        style={{
+                          width: 16,
+                          height: 16,
+                          borderRadius: 4,
+                          accentColor: '#2E58D7',
+                          cursor: 'pointer',
+                        }}
+                      />
+                      <span>{item.name} ({item.count})</span>
+                    </label>
+                  ))}
                 </div>
-                {/* Content */}
-                <div>
-                  <p style={{ fontWeight: 800, fontSize: '1rem', color: '#FFFFFF', margin: '0 0 0.25rem', lineHeight: 1.3, letterSpacing: '-0.02em' }}>
-                    {item.title}
-                  </p>
-                  <p style={{ fontSize: '0.75rem', color: '#DDE2F0', margin: '0 0 0.75rem', lineHeight: 1.4 }}>
-                    {item.subtitle}
-                  </p>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.7rem', color: '#7AD9E8', fontWeight: 600 }}>{item.tag}</span>
-                    <button style={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: '999px',
-                      background: '#2E58D7',
-                      border: 'none',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#FFFFFF',
-                      transition: 'background 0.15s',
-                    }}
-                    onMouseEnter={e => (e.currentTarget.style.background = '#1C3FA8')}
-                    onMouseLeave={e => (e.currentTarget.style.background = '#2E58D7')}>
-                      <ArrowRight size={13} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ══════════════ SEARCH + FILTER ══════════════ */}
-        <section style={{ marginBottom: '1.25rem' }}>
-          <div style={{ marginBottom: '0.75rem' }}>
-            <EventSearch value={search} onChange={handleSearch} />
-          </div>
-          <EventFilter filters={localFilters} onChange={handleFilterChange} onClear={clearFilters} />
-        </section>
-
-        {/* ══════════════ EVENTS SECTION ══════════════ */}
-        <section>
-          <div className="section-header" style={{ marginBottom: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
-              <h2 className="section-title">Events</h2>
-              <span className="section-subtitle">Join events, college festivals and more.</span>
-            </div>
-            <Link to="/events" className="view-all-link">View all →</Link>
-          </div>
-
-          {/* Results count */}
-          {data && !loading && (
-            <p style={{ color: '#7C849E', fontSize: '0.8125rem', marginBottom: '1rem' }}>
-              Showing <strong style={{ color: '#0B1E4A' }}>{data.total}</strong> event{data.total !== 1 ? 's' : ''}
-              {filters.search && <> matching "<strong style={{ color: '#0B1E4A' }}>{filters.search}</strong>"</>}
-              {hasActiveFilters && (
-                <button onClick={clearFilters} style={{ marginLeft: '0.75rem', fontSize: '0.75rem', color: '#2E58D7', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, padding: 0 }}>
-                  Clear filters ✕
-                </button>
               )}
-            </p>
-          )}
-
-          {/* Event Grid */}
-          {loading ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
-              {Array.from({ length: 9 }).map((_, i) => <SkeletonCard key={i} />)}
             </div>
-          ) : error ? (
-            <div style={{
-              textAlign: 'center',
-              padding: '3rem',
-              background: '#FFE2EB',
-              border: '1px solid #C1205B',
-              borderRadius: '14px',
-              color: '#9A2A2A',
-            }}>
-              <p style={{ fontSize: '1rem', margin: 0, fontWeight: 700 }}>⚠️ {error}</p>
-              <p style={{ color: '#5B6487', fontSize: '0.875rem', marginTop: '0.5rem' }}>
-                {import.meta.env.PROD
-                  ? 'If the server was idle, please allow ~30 seconds for it to wake up and refresh.'
-                  : 'Make sure the backend server is running on port 5000.'}
-              </p>
-            </div>
-          ) : (
-            <EventList events={data?.events || []} />
-          )}
 
-          {/* Pagination */}
-          {data && data.totalPages > 1 && (
-            <EventPagination
-              currentPage={data.page}
-              totalPages={data.totalPages}
-              onPageChange={setPage}
-              total={data.total}
-              limit={data.limit}
-            />
-          )}
-        </section>
+            {/* 2. Location Section */}
+            <div style={{ borderBottom: '1px solid #E8EBF4', paddingBottom: '1.15rem', marginBottom: '1.15rem' }}>
+              <button
+                onClick={() => toggleSection('location')}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  fontSize: '0.925rem',
+                  fontWeight: 700,
+                  color: '#0B1E4A',
+                  marginBottom: openSections.location ? '0.75rem' : 0,
+                }}
+              >
+                <span>Location</span>
+                {openSections.location ? <ChevronUp size={16} color="#7C849E" /> : <ChevronDown size={16} color="#7C849E" />}
+              </button>
+
+              {openSections.location && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
+                  {[
+                    { name: 'Chennai', count: 6 },
+                    { name: 'Bengaluru', count: 4 },
+                    { name: 'Hyderabad', count: 3 },
+                    { name: 'Pune', count: 3 },
+                    { name: 'Delhi', count: 2 },
+                    { name: 'Others', count: 6 },
+                  ].map((item) => (
+                    <label
+                      key={item.name}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.6rem',
+                        fontSize: '0.85rem',
+                        color: '#5B6487',
+                        cursor: 'pointer',
+                        userSelect: 'none',
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedLocations.includes(item.name)}
+                        onChange={() => toggleItem(selectedLocations, setSelectedLocations, item.name)}
+                        style={{
+                          width: 16,
+                          height: 16,
+                          borderRadius: 4,
+                          accentColor: '#2E58D7',
+                          cursor: 'pointer',
+                        }}
+                      />
+                      <span>{item.name} ({item.count})</span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* 3. Entry Fee Section */}
+            <div style={{ borderBottom: '1px solid #E8EBF4', paddingBottom: '1.15rem', marginBottom: '1.15rem' }}>
+              <button
+                onClick={() => toggleSection('fee')}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  fontSize: '0.925rem',
+                  fontWeight: 700,
+                  color: '#0B1E4A',
+                  marginBottom: openSections.fee ? '0.75rem' : 0,
+                }}
+              >
+                <span>Entry Fee</span>
+                {openSections.fee ? <ChevronUp size={16} color="#7C849E" /> : <ChevronDown size={16} color="#7C849E" />}
+              </button>
+
+              {openSections.fee && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
+                  {[
+                    { name: 'Free', count: 14 },
+                    { name: 'Paid', count: 8 },
+                  ].map((item) => (
+                    <label
+                      key={item.name}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.6rem',
+                        fontSize: '0.85rem',
+                        color: '#5B6487',
+                        cursor: 'pointer',
+                        userSelect: 'none',
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedFees.includes(item.name)}
+                        onChange={() => toggleItem(selectedFees, setSelectedFees, item.name)}
+                        style={{
+                          width: 16,
+                          height: 16,
+                          borderRadius: 4,
+                          accentColor: '#2E58D7',
+                          cursor: 'pointer',
+                        }}
+                      />
+                      <span>{item.name} ({item.count})</span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* 4. Date Section */}
+            <div>
+              <button
+                onClick={() => toggleSection('date')}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  fontSize: '0.925rem',
+                  fontWeight: 700,
+                  color: '#0B1E4A',
+                  marginBottom: openSections.date ? '0.75rem' : 0,
+                }}
+              >
+                <span>Date</span>
+                {openSections.date ? <ChevronUp size={16} color="#7C849E" /> : <ChevronDown size={16} color="#7C849E" />}
+              </button>
+
+              {openSections.date && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
+                  {['Today', 'This Week', 'This Month', 'Custom Range'].map((item) => (
+                    <label
+                      key={item}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.6rem',
+                        fontSize: '0.85rem',
+                        color: '#5B6487',
+                        cursor: 'pointer',
+                        userSelect: 'none',
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedDates.includes(item)}
+                        onChange={() => toggleItem(selectedDates, setSelectedDates, item)}
+                        style={{
+                          width: 16,
+                          height: 16,
+                          borderRadius: 4,
+                          accentColor: '#2E58D7',
+                          cursor: 'pointer',
+                        }}
+                      />
+                      <span>{item}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+          </aside>
+
+          {/* ══════════════ RIGHT CONTENT: 2-COLUMN EVENT GRID ══════════════ */}
+          <div>
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: '4rem 1rem', color: '#5B6487' }}>
+                <p>Loading events...</p>
+              </div>
+            ) : sortedEvents.length === 0 ? (
+              <div
+                style={{
+                  background: '#FFFFFF',
+                  borderRadius: 14,
+                  border: '1px solid #DDE2F0',
+                  padding: '3.5rem 2rem',
+                  textAlign: 'center',
+                  boxShadow: '0 4px 18px rgba(11, 30, 74, 0.06)',
+                }}
+              >
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0B1E4A', margin: '0 0 0.5rem 0' }}>
+                  No tech events found
+                </h3>
+                <p style={{ color: '#5B6487', fontSize: '0.925rem', marginBottom: '1.25rem' }}>
+                  Try relaxing your filter criteria or search query to see more events.
+                </p>
+                <button
+                  onClick={handleClearFilters}
+                  style={{
+                    background: '#2E58D7',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    padding: '0.65rem 1.5rem',
+                    borderRadius: 999,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = '#1C3FA8')}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = '#2E58D7')}
+                >
+                  Reset all filters
+                </button>
+              </div>
+            ) : (
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
+                  gap: '1.5rem',
+                }}
+              >
+                {sortedEvents.map((event) => (
+                  <EventCard key={event.id} event={event} />
+                ))}
+              </div>
+            )}
+          </div>
+
+        </div>
       </div>
 
-      <style>{`
-        @media (max-width: 900px) {
-          .hero-cards-hide { display: none !important; }
-        }
-      `}</style>
     </div>
   );
 };

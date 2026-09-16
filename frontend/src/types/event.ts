@@ -52,6 +52,14 @@ export interface Event {
   // added by backend when student is logged in
   isRegistered?: boolean;
   isBookmarked?: boolean;
+  entryFee?: string;
+  registrationStatusBadge?: 'Registration Open' | 'Closing Soon' | 'Upcoming';
+  expectedCrowd?: string;
+  contactPhone?: string;
+  contactEmail?: string;
+  highlights?: string[];
+  bannerImage?: string;
+  subCategory?: string;
 }
 
 export interface Registration {
